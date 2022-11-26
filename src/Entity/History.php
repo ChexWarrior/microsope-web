@@ -34,6 +34,9 @@ class History
     #[ORM\OneToMany(mappedBy: 'history', targetEntity: Player::class, orphanRemoval: true)]
     private Collection $players;
 
+    #[ORM\ManyToOne]
+    private ?Player $lens = null;
+
     public function __construct()
     {
         $this->periods = new ArrayCollection();
@@ -149,6 +152,18 @@ class History
                 $player->setHistory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLens(): ?Player
+    {
+        return $this->lens;
+    }
+
+    public function setLens(?Player $lens): self
+    {
+        $this->lens = $lens;
 
         return $this;
     }
