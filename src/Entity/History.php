@@ -31,9 +31,13 @@ class History
     #[ORM\OneToMany(mappedBy: 'history', targetEntity: Period::class, orphanRemoval: true)]
     private Collection $periods;
 
+    #[ORM\OneToMany(mappedBy: 'history', targetEntity: Player::class, orphanRemoval: true)]
+    private Collection $players;
+
     public function __construct()
     {
         $this->periods = new ArrayCollection();
+        $this->players = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -113,6 +117,36 @@ class History
             // set the owning side to null (unless already changed)
             if ($period->getHistory() === $this) {
                 $period->setHistory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Player>
+     */
+    public function getPlayers(): Collection
+    {
+        return $this->players;
+    }
+
+    public function addPlayer(Player $player): self
+    {
+        if (!$this->players->contains($player)) {
+            $this->players->add($player);
+            $player->setHistory($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlayer(Player $player): self
+    {
+        if ($this->players->removeElement($player)) {
+            // set the owning side to null (unless already changed)
+            if ($player->getHistory() === $this) {
+                $player->setHistory(null);
             }
         }
 
