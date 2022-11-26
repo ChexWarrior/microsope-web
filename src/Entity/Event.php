@@ -31,6 +31,10 @@ class Event
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Scene::class, orphanRemoval: true)]
     private Collection $scenes;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Player $createdBy = null;
+
     public function __construct()
     {
         $this->scenes = new ArrayCollection();
@@ -115,6 +119,18 @@ class Event
                 $scene->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?Player
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?Player $createdBy): self
+    {
+        $this->createdBy = $createdBy;
 
         return $this;
     }

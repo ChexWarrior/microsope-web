@@ -31,6 +31,10 @@ class Period
     #[ORM\OneToMany(mappedBy: 'period', targetEntity: Event::class, orphanRemoval: true)]
     private Collection $events;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Player $createdBy = null;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -115,6 +119,18 @@ class Period
                 $event->setPeriod(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?Player
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?Player $createdBy): self
+    {
+        $this->createdBy = $createdBy;
 
         return $this;
     }
