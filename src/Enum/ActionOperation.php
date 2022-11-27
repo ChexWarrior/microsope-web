@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-enum EntityOperation: string
+enum ActionOperation: string
 {
     case CREATE = 'create';
     case EDIT = 'edit';

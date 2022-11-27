@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-enum EntityType: string
+enum ActionEntity: string
 {
     case History = 'history';
     case Event = 'event';
