@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use ActionEntity;
-use ActionOperation;
+use App\Enum\ActionEntity;
+use App\Enum\ActionOperation;
 use App\Repository\ActionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
