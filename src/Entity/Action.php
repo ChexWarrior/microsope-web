@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ActionEntity;
+use ActionOperation;
 use App\Repository\ActionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,11 +20,11 @@ class Action
     #[ORM\JoinColumn(nullable: false)]
     private ?History $history = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $operation = null;
+    #[ORM\Column(length: 255, enumType: ActionOperation::class)]
+    private ?ActionOperation $operation = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $entityType = null;
+    #[ORM\Column(length: 255, enumType: ActionEntity::class)]
+    private ?ActionEntity $entityType = null;
 
     #[ORM\Column]
     private ?int $entityId = null;
@@ -51,24 +53,24 @@ class Action
         return $this;
     }
 
-    public function getOperation(): ?string
+    public function getOperation(): ActionOperation
     {
         return $this->operation;
     }
 
-    public function setOperation(string $operation): self
+    public function setOperation(ActionOperation $operation): self
     {
         $this->operation = $operation;
 
         return $this;
     }
 
-    public function getEntityType(): ?string
+    public function getEntityType(): ActionEntity
     {
         return $this->entityType;
     }
 
-    public function setEntityType(string $entityType): self
+    public function setEntityType(ActionEntity $entityType): self
     {
         $this->entityType = $entityType;
 
