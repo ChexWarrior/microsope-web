@@ -18,8 +18,8 @@ class Event
     #[ORM\Column]
     private ?int $place = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $tone = null;
+    #[ORM\Column(length: 255, enumType: Tone::class)]
+    private ?Tone $tone = null;
 
     #[ORM\Column(length: 1000)]
     private ?string $description = null;
@@ -57,12 +57,12 @@ class Event
         return $this;
     }
 
-    public function getTone(): ?string
+    public function getTone(): Tone
     {
         return $this->tone;
     }
 
-    public function setTone(string $tone): self
+    public function setTone(Tone $tone): self
     {
         $this->tone = $tone;
 
