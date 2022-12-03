@@ -26,6 +26,9 @@ class Player
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $legacy = null;
 
+    #[ORM\Column]
+    private ?bool $lens = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Player
     public function setLegacy(?string $legacy): self
     {
         $this->legacy = $legacy;
+
+        return $this;
+    }
+
+    public function isLens(): ?bool
+    {
+        return $this->lens;
+    }
+
+    public function setLens(bool $lens): self
+    {
+        $this->lens = $lens;
 
         return $this;
     }
