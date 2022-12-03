@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\Tone;
 use App\Repository\SceneRepository;
 use Doctrine\ORM\Mapping as ORM;
 

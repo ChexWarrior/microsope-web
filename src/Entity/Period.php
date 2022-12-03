@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\Tone;
 use App\Repository\PeriodRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
