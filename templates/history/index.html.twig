@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello History {{ history.id }} {% endblock %}
+
+{% block body %}
+  <h1>History ID: {{ history.id }}</h1>
+  <h2>Number of Players: {{ history.players|length }}</h2>
+  <p>
+    {{ history.description }}
+  </p>
+{% endblock %}
