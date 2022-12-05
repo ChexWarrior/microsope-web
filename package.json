@@ -1,0 +1,25 @@
+{
+  "name": "microscope-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChexWarrior/microsope-web.git"
+  },
+  "author": "Chexwarrior",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChexWarrior/microsope-web/issues"
+  },
+  "homepage": "https://github.com/ChexWarrior/microsope-web#readme",
+  "devDependencies": {
+    "sass": "^1.56.1"
+  }
+}
