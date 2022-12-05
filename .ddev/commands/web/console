@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+USER_CMD="$@"
+
+php bin/console "$USER_CMD"
