@@ -29,7 +29,7 @@ class Player
     #[ORM\Column]
     private ?bool $lens = null;
 
-    public function __construct(string $name, ?History $history, bool $active = true, ?string $legacy, bool $isLens = false)
+    public function __construct(string $name, ?History $history, bool $active, ?string $legacy, bool $isLens)
     {
         $this->name = $name;
         $this->history = $history;
