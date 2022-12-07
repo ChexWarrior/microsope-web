@@ -13,6 +13,7 @@
       <span><strong>Focus:</strong> {{history.focus }}</span>
       {% endif %}
 
+      {# TODO: Move all Palette logic into own template #}
       {% if history.excluded is not empty or history.included is not empty %}
         <h3>Palette</h3>
       {% endif %}
