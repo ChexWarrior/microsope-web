@@ -21,7 +21,10 @@ class AppFixtures extends Fixture
         }
 
         $history = new History();
-        $history->setDescription($faker->text());
+        $history->setDescription($faker->sentence());
+        $history->setFocus($faker->words(3, true));
+        $history->setExcluded($faker->words(5));
+        $history->setIncluded($faker->words(5));
         array_walk($players, fn (Player $p) => $history->addPlayer($p));
 
         $manager->persist($history);
