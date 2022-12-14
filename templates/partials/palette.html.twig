@@ -1,0 +1,8 @@
+{% if items is not empty %}
+<div>
+	<span>
+		<strong>{{ title }}</strong>
+	</span>
+	{% include "partials/list.html.twig" with { items } %}
+</div>
+{% endif %}
