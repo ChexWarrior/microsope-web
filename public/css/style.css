@@ -12,3 +12,7 @@
   border: black 1px solid;
   padding: 5px;
 }
+
+h3 {
+  margin: 0;
+}
