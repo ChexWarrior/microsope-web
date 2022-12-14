@@ -14,18 +14,20 @@
       {% endif %}
 
       {# TODO: Move all Palette logic into own template #}
+      <div class="container">
       {% if history.excluded is not empty or history.included is not empty %}
         <h3>Palette</h3>
       {% endif %}
       {% if history.excluded is not empty %}
         <span><strong>Excluded</strong></span>
-        {% include "partials/palette.html.twig" with { items: history.excluded } %}
+        {% include "partials/list.html.twig" with { items: history.excluded } %}
       {% endif %}
 
       {% if history.included is not empty %}
         <span><strong>Included</strong></span>
-        {% include "partials/palette.twig" with { items: history.included } %}
+        {% include "partials/list.html.twig" with { items: history.included } %}
       {% endif %}
+      </div>
     </div>
     <div class="player info">
     </div>
