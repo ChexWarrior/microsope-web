@@ -19,6 +19,7 @@
         {% if history.excluded is not empty or history.included is not empty %}
         <div>
           <h3>Palette</h3>
+          <hr>
           <div class="container">
             {% include "partials/palette.html.twig" with { title: 'Excluded', items: history.excluded } %}
             {% include "partials/palette.html.twig" with { title: 'Included', items: history.included } %}
