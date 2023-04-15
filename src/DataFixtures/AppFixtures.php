@@ -11,14 +11,17 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        $numPlayers = 5;
         $faker = \Faker\Factory::create();
         $players = [];
 
-        for ($i = 0; $i < 3; $i += 1) {
+        for ($i = 0; $i < $numPlayers; $i += 1) {
             $player = new Player(name: $faker->firstName(), history: null, active: true, legacy: null, isLens: false);
             $players[] = $player;
             $manager->persist($player);
         }
+
+        $players[$numPlayers - 1]->setActive(false);
 
         $history = new History();
         $history->setDescription($faker->sentence());
