@@ -16,7 +16,7 @@ class AppFixtures extends Fixture
         $players = [];
 
         for ($i = 0; $i < $numPlayers; $i += 1) {
-            $player = new Player(name: $faker->firstName(), history: null, active: true, legacy: null, isLens: false);
+            $player = new Player(name: $faker->firstName(), history: null, active: true, legacy: $faker->sentence(4), isLens: false);
             $players[] = $player;
             $manager->persist($player);
         }

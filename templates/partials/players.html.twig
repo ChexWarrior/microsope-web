@@ -1,3 +1,9 @@
 {% for player in players %}
-  <span class="{{ player.active ? 'active' : '' }}">{{ player.name }}</span>
+  <div class="player-info {{ player.active is empty ? ' inactive' : '' }}">
+    <h3>{{ player.name }}</h3>
+    {% if player.legacy and player.active %}
+      <br>
+      <span class="legacy">{{ player.legacy }}</span>
+    {% endif %}
+  </div>
 {% endfor %}
