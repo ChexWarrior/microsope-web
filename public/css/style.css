@@ -4,11 +4,7 @@
   gap: 2em;
 }
 
-.card {
-  flex-wrap: nowrap;
-}
-
-.info {
+.container-padding {
   border: black 1px solid;
   padding: 5px;
 }
@@ -20,4 +16,9 @@ h3 {
 .inactive {
   font-style: italic;
   color: grey;
+}
+
+/** Container for periods, events and scenes. */
+.card {
+  border: black 1px solid;
 }
