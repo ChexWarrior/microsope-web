@@ -6,7 +6,7 @@
   <!-- Top Container -->
   <div class="container">
     <div class="history container-padding">
-      <h2>History container-paddingrmation</h2>
+      <h2>History Information</h2>
       <div class="container">
         <div>
           <span><strong>Seed:</strong> {{ history.description }}</span>
@@ -29,13 +29,13 @@
       </div>
     </div>
     <div class="player container-padding">
-      <h2>Player container-padding</h2>
+      <h2>Player Information</h2>
       <div class="container">
       {% include "partials/players.html.twig" with { players: history.players } %}
       </div>
     </div>
   </div>
-  <div class="container">
+  <div class="container nowrap">
     {% include "partials/periods.html.twig" with { periods: history.periods } %}
   </div>
 {% endblock %}

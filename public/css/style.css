@@ -18,7 +18,16 @@ h3 {
   color: grey;
 }
 
+.nowrap {
+  flex-wrap: nowrap;
+  overflow: scroll;
+}
+
 /** Container for periods, events and scenes. */
 .card {
-  border: black 1px solid;
+
+}
+
+.events {
+  flex: 1 0 200px;
 }

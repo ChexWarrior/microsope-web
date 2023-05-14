@@ -35,14 +35,14 @@ class AppFixtures extends Fixture
         array_walk($players, fn (Player $p) => $history->addPlayer($p));
 
         // Generate periods.
-        $numPeriods = 7;
+        $numPeriods = 10;
         $periods = [];
 
         for ($i = 0; $i < $numPeriods; $i += 1) {
             $period = new Period();
             $period->setPlace($i);
             $period->setCreatedBy($players[array_rand($players)]);
-            $period->setDescription($faker->sentence());
+            $period->setDescription($faker->paragraph());
             $period->setTone($faker->boolean() ? Tone::LIGHT : Tone::DARK);
             $period->setHistory($history);
             $manager->persist($period);
