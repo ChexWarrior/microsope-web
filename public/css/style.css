@@ -52,6 +52,10 @@ h3 {
   overflow: scroll;
 }
 
+.event {
+  margin-top: 5px;
+}
+
 .events {
   flex: 1 0 300px;
 }
