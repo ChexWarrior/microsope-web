@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Event;
 use App\Entity\History;
 use App\Entity\Period;
 use App\Entity\Player;
@@ -36,9 +37,8 @@ class AppFixtures extends Fixture
 
         // Generate periods.
         $numPeriods = 10;
-        $periods = [];
-
         for ($i = 0; $i < $numPeriods; $i += 1) {
+            $numEvents = $faker->numberBetween(1, 7);
             $period = new Period();
             $period->setPlace($i);
             $period->setCreatedBy($players[array_rand($players)]);
@@ -46,6 +46,17 @@ class AppFixtures extends Fixture
             $period->setTone($faker->boolean() ? Tone::LIGHT : Tone::DARK);
             $period->setHistory($history);
             $manager->persist($period);
+
+            // Create events for this period.
+            for ($x = 0; $x < $numEvents; $x += 1) {
+                $event = new Event();
+                $event->setPlace($x);
+                $event->setPeriod($period);
+                $event->setCreatedBy($players[array_rand($players)]);
+                $event->setDescription($faker->paragraph());
+                $event->setTone($faker->boolean() ? Tone::LIGHT : Tone::DARK);
+                $manager->persist($event);
+            }
         }
 
 
