@@ -42,7 +42,7 @@ class AppFixtures extends Fixture
             $period = new Period();
             $period->setPlace($i);
             $period->setCreatedBy($players[array_rand($players)]);
-            $period->setDescription($faker->paragraph());
+            $period->setDescription($i === 0 ? $faker->paragraph(10) : $faker->paragraph());
             $period->setTone($faker->boolean() ? Tone::LIGHT : Tone::DARK);
             $period->setHistory($history);
             $manager->persist($period);
