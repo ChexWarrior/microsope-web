@@ -35,7 +35,7 @@ h3 {
 }
 
 .card p {
-  max-height: calc(100% * 5/6);
+  max-height: calc(100% * 3/4);
   overflow: hidden;
   text-overflow: ellipsis;
 }
