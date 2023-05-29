@@ -1,0 +1,6 @@
+# Next Steps
+> So I don't lose my place in between working on this...
+
+* ✅ Ensure that period cards retain same width and height (based on viewport we'll start with desktop) regardless of content...
+* Ensure event cards are same as period cards but flipped 90 degrees
+*
