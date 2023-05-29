@@ -23,9 +23,24 @@ h3 {
   overflow: scroll;
 }
 
-/** Container for periods, events and scenes. */
+/**
+ * Common class for Periods, Events and Scenes.
+ * - Always keep same dimensions (based on viewport)
+ * - Hide overflow but on hover scroll to show all text...
+ */
 .card {
+  height: 260px;
+  width: 200px;
+}
 
+.card p {
+  max-height: calc(100% * 5/6);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card p:hover {
+  overflow: scroll;
 }
 
 .events {
