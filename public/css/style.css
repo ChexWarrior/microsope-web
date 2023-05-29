@@ -29,6 +29,7 @@ h3 {
  * - Hide overflow but on hover scroll to show all text...
  */
 .card {
+  border: black 1px solid;
   height: 260px;
   width: 200px;
 }
