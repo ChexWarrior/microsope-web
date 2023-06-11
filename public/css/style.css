@@ -58,3 +58,20 @@ h3 {
 .events {
   flex: 1 0 300px;
 }
+
+/** Tone styles */
+.tone {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: black 1px solid;
+}
+
+.light {
+  background-color: white;
+}
+
+.dark {
+  background-color: black;
+}

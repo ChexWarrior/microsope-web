@@ -4,12 +4,12 @@
     <!-- The card will hold the actual period container-padding... -->
     <div class="period card">
       <p>{{ period.description }}</p>
-      <span>{{ period.tone.value }}
+      {% include "partials/tone.html.twig" with { tone: period.tone.value } %}
     </div>
     {% for event in period.events %}
       <div class="event turned card" data-event-place="{{ event.place }}" data-event-id="{{ event.id }}">
         <p>{{ event.description }}</p>
-        <span>{{ event.tone.value }}</span>
+        {% include "partials/tone.html.twig" with { tone: period.tone.value } %}
       </div>
     {% endfor %}
   </div>
