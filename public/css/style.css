@@ -29,17 +29,23 @@ h3 {
  * - Hide overflow but on hover scroll to show all text...
  */
 .card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   border: black 1px solid;
-  height: 260px;
+  height: 280px;
   width: 200px;
 }
 
 .turned {
   height: 200px;
-  width: 260px;
+  width: 280px;
 }
 
 .card p {
+  flex-direction: column;
+  margin: 2px;
   max-height: calc(100% * 3/4);
   overflow: scroll;
   text-overflow: ellipsis;
