@@ -8,7 +8,8 @@
     </div>
     {% for event in period.events %}
       <div class="event turned-card" data-event-place="{{ event.place }}" data-event-id="{{ event.id }}">
-        {{ event.description }}
+        <p>{{ event.description }}</p>
+        <span>{{ event.tone.value }}</span>
       </div>
     {% endfor %}
   </div>
