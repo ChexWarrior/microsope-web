@@ -34,22 +34,15 @@ h3 {
   width: 200px;
 }
 
-.turned-card {
-  border: black 1px solid;
+.turned {
   height: 200px;
   width: 260px;
 }
 
-.card p,
-.turned-card p {
+.card p {
   max-height: calc(100% * 3/4);
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.card p:hover,
-.turned-card p:hover {
   overflow: scroll;
+  text-overflow: ellipsis;
 }
 
 .event {
