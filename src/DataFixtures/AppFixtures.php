@@ -53,7 +53,7 @@ class AppFixtures extends Fixture
                 $event->setPlace($x);
                 $event->setPeriod($period);
                 $event->setCreatedBy($players[array_rand($players)]);
-                $event->setDescription($faker->paragraph());
+                $event->setDescription($x === 0 ? $faker->paragraph(10) : $faker->paragraph());
                 $event->setTone($faker->boolean() ? Tone::LIGHT : Tone::DARK);
                 $manager->persist($event);
             }
