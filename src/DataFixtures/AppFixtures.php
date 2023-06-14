@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\History;
 use App\Entity\Period;
 use App\Entity\Player;
+use App\Entity\Scene;
 use App\Enum\Tone;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -50,12 +51,24 @@ class AppFixtures extends Fixture
             // Create events for this period.
             for ($x = 0; $x < $numEvents; $x += 1) {
                 $event = new Event();
+                $numScenes = $faker->numberBetween(1, 5);
                 $event->setPlace($x);
                 $event->setPeriod($period);
                 $event->setCreatedBy($players[array_rand($players)]);
                 $event->setDescription($x === 0 ? $faker->paragraph(10) : $faker->paragraph());
                 $event->setTone($faker->boolean() ? Tone::LIGHT : Tone::DARK);
                 $manager->persist($event);
+
+                // Create scenes for this event.
+                for ($z = 0; $z < $numScenes; $z += 1) {
+                    $scene = new Scene();
+                    $scene->setPlace($z);
+                    $scene->setEvent($event);
+                    $scene->setCreatedBy($players[array_rand($players)]);
+                    $scene->setDescription($faker->paragraph());
+                    $scene->setTone($faker->boolean() ? Tone::LIGHT : Tone::DARK);
+                    $manager->persist($scene);
+                }
             }
         }
 
