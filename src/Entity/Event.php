@@ -29,7 +29,7 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?Period $period = null;
 
-    #[ORM\OneToMany(mappedBy: 'event', targetEntity: Scene::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: Scene::class, orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private Collection $scenes;
 
     #[ORM\ManyToOne]
