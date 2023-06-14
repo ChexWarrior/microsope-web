@@ -51,8 +51,13 @@ h3 {
   text-overflow: ellipsis;
 }
 
+.period {
+  background-color: #f5abab;
+}
+
 .event {
   margin-top: 5px;
+  background-color: #a5ec93;
 }
 
 .events {
