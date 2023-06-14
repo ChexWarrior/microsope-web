@@ -11,6 +11,9 @@
         <p>{{ event.description }}</p>
         {% include "partials/tone.html.twig" with { tone: period.tone.value } %}
       </div>
+      {% for scene in event.scenes %}
+        <span>{{ scene.place }}</span>
+      {% endfor %}
     {% endfor %}
   </div>
 {% endfor %}
