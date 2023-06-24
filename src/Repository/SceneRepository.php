@@ -40,8 +40,9 @@ class SceneRepository extends ServiceEntityRepository
         }
     }
 
-    public function getNumScenesForEventsInHistory(History $history) {
+    public function getNumScenesForEventsInHistory(History $history): array {
         $entityManager = $this->getEntityManager();
+        $numScenesByEvent = [];
         $query = $entityManager->createQuery(
             'SELECT COUNT(s) numScenes, p.id period_id, e.id event_id
             FROM App\Entity\Period p
@@ -51,9 +52,15 @@ class SceneRepository extends ServiceEntityRepository
             GROUP BY e.id'
         );
         $query->setParameter(':history', $history);
-        $result = $query->getArrayResult();
+        $results = $query->getArrayResult();
 
-        return $result;
+        // Convert to array indexed by event id
+        foreach ($results as $result) {
+            ['event_id' => $eventId, 'numScenes' => $numScenes] = $result;
+            $numScenesByEvent[$eventId] = $numScenes;
+        }
+
+        return $numScenesByEvent;
     }
 
 //    /**
