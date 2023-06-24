@@ -43,7 +43,7 @@ class SceneRepository extends ServiceEntityRepository
     public function getNumScenesForEventsInHistory(History $history) {
         $entityManager = $this->getEntityManager();
         $query = $entityManager->createQuery(
-            'SELECT COUNT(s) numScenes, p period, e event
+            'SELECT COUNT(s) numScenes, p.id period_id, e.id event_id
             FROM App\Entity\Period p
             JOIN p.events e
             JOIN e.scenes s
@@ -51,7 +51,7 @@ class SceneRepository extends ServiceEntityRepository
             GROUP BY e.id'
         );
         $query->setParameter(':history', $history);
-        $result = $query->getResult();
+        $result = $query->getArrayResult();
 
         return $result;
     }
