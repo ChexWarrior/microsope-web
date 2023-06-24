@@ -13,10 +13,11 @@ class HistoryController extends AbstractController
     #[Route('/history/{id}', name: 'app_history', methods: 'GET')]
     public function view(History $history, SceneRepository $sceneRepository): Response
     {
-        $sceneRepository->getNumScenesForEventsInHistory($history);
+        $numScenesByEvent = $sceneRepository->getNumScenesForEventsInHistory($history);
         return $this->render('history/index.html.twig', [
             'controller_name' => 'HistoryController',
             'history' => $history,
+            'numScenesByEvent' => $numScenesByEvent,
         ]);
     }
 }
