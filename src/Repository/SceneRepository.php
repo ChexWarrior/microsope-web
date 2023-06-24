@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\History;
 use App\Entity\Scene;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -37,6 +38,22 @@ class SceneRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getNumScenesForEventsInHistory(History $history) {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT COUNT(s) numScenes, p period, e event
+            FROM App\Entity\Period p
+            JOIN p.events e
+            JOIN e.scenes s
+            WHERE p.history = :history
+            GROUP BY e.id'
+        );
+        $query->setParameter(':history', $history);
+        $result = $query->getResult();
+
+        return $result;
     }
 
 //    /**
