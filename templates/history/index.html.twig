@@ -36,6 +36,8 @@
     </div>
   </div>
   <div class="container nowrap container-padding">
-    {% include "partials/periods.html.twig" with { periods: history.periods, numScenesByEvent: numScenesByEvent } %}
+    {% for period in history.periods %}
+      {% include "partials/period.html.twig" with { period: period, numScenesByEvent: numScenesByEvent } %}
+    {% endfor %}
   </div>
 {% endblock %}
