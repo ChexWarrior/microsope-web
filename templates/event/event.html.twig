@@ -1,5 +1,5 @@
 <div class="event turned card" data-event-place="{{ event.place }}" data-event-id="{{ event.id }}">
 	<p>{{ event.description }}</p>
 	{% include "partials/tone.html.twig" with { tone: period.tone.value } %}
+  <span class="scene-count">{{ numScenes }}</span>
 </div>
-{{ numScenes }}

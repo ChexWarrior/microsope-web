@@ -66,6 +66,11 @@ h3 {
   background-color: #a5ec93;
 }
 
+.scene-count {
+  font-size: large;
+  align-self: flex-end;
+}
+
 .events {
   flex: 1 0 300px;
 }
