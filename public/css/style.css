@@ -77,6 +77,7 @@ h3 {
   height: 40px;
   border-radius: 50%;
   border: black 1px solid;
+  min-height: 40px;
 }
 
 .light {
