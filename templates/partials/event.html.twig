@@ -7,7 +7,5 @@
     {% include "partials/tone.html.twig" with { tone: period.tone.value } %}
     <span class="scene-count">{{ numScenes }}</span>
   </div>
-  {% for scene in event.scenes %}
-    {% include "partials/scene.html.twig" %}
-  {% endfor %}
+  <!-- Scenes will fill in here when requested -->
 </div>
