@@ -13,6 +13,10 @@ body {
   padding: 5px;
 }
 
+.scenes {
+  flex-direction: row;
+}
+
 h3 {
   margin: 0;
 }
@@ -72,7 +76,7 @@ h3 {
 }
 
 .events {
-  flex: 1 0 300px;
+  flex: 1 0;
 }
 
 /** Tone styles */
