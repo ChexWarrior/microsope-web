@@ -1,6 +1,6 @@
-{% for scene in event %}
+{% for scene in event.scenes %}
   <div class="scene card">
     <p>{{ scene.description }}</p>
-    {% include "partials/tone.html.twig" with { tone: period.tone.value } %}
+    {% include "partials/tone.html.twig" with { tone: scene.tone.value } %}
   </div>
 {% endfor %}
