@@ -67,7 +67,7 @@ class SceneTestFixtures extends Fixture implements FixtureGroupInterface
         // Generate two events for first period.
         for ($x = 0; $x < 2; $x += 1) {
             $event = new Event();
-            $numScenes = $faker->numberBetween(1, 3);
+            $numScenes = $faker->numberBetween(2, 3);
             $event->setPlace($x);
             $event->setPeriod($firstPeriod);
             $event->setCreatedBy($players[array_rand($players)]);
