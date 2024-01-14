@@ -28,14 +28,14 @@
         {% endif %}
       </div>
     </div>
-    <div class="player container-padding">
+    <div class="player">
       <h2>Player Information</h2>
       <div class="container">
       {% include "partials/players.html.twig" with { players: history.players } %}
       </div>
     </div>
   </div>
-  <div class="container nowrap container-padding">
+  <div class="container nowrap">
     {% for period in history.periods %}
       {% include "partials/period.html.twig" with { period: period, numScenesByEvent: numScenesByEvent } %}
     {% endfor %}

@@ -6,9 +6,11 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 2em;
+  border: black 1px solid;
+  padding: 5px;
 }
 
-.container-padding {
+.history {
   border: black 1px solid;
   padding: 5px;
 }
