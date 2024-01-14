@@ -1,11 +1,11 @@
   <!-- The events container will hold all the events belonging to this period -->
-  <div class="events container-padding" data-period-place="{{ period.place }}" data-period-id="{{ period.id }}">
-    <!-- The card will hold the actual period container-padding... -->
+  <div class="events container column" data-period-place="{{ period.place }}" data-period-id="{{ period.id }}">
+    <!-- The card will hold the actual period information -->
     <div class="period card">
       <p>{{ period.description }}</p>
       {% include "partials/tone.html.twig" with { tone: period.tone.value } %}
     </div>
     {% for event in period.events %}
-      {% include "event/event.html.twig" with { event: event, numScenes: numScenesByEvent[event.id] } %}
+      {% include "partials/event.html.twig" with { event: event, numScenes: numScenesByEvent[event.id] } %}
     {% endfor %}
   </div>

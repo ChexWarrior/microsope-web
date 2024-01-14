@@ -1,0 +1,13 @@
+<!-- The scenes container holds all the scenes belonging to this event -->
+<div class="scenes container nowrap" data-event-place="{{ event.place }}"
+ data-event-id="{{ event.id }}">
+ <!-- The card will hold the actual event information -->
+  <div class="event turned card">
+    <p>{{ event.description }}</p>
+    {% include "partials/tone.html.twig" with { tone: period.tone.value } %}
+    <span class="scene-count">{{ numScenes }}</span>
+  </div>
+  {% for scene in event.scenes %}
+    {% include "partials/scene.html.twig" %}
+  {% endfor %}
+</div>
