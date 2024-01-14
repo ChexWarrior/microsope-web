@@ -10,13 +10,13 @@ body {
   padding: 5px;
 }
 
+.column {
+  flex-direction: column;
+}
+
 .history {
   border: black 1px solid;
   padding: 5px;
-}
-
-.scenes {
-  flex-direction: row;
 }
 
 h3 {
