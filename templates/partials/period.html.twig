@@ -6,6 +6,6 @@
       {% include "partials/tone.html.twig" with { tone: period.tone.value } %}
     </div>
     {% for event in period.events %}
-      {% include "event/event.html.twig" with { event: event, numScenes: numScenesByEvent[event.id] } %}
+      {% include "partials/event.html.twig" with { event: event, numScenes: numScenesByEvent[event.id] } %}
     {% endfor %}
   </div>
