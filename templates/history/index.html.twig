@@ -5,8 +5,8 @@
 {% block body %}
   <!-- Top Container -->
   <div class="container">
-    <div class="history padded-border">
-      <h2>History Information</h2>
+    <details class="history padded-border align-start">
+      <summary>History Information</summary>
       <div class="container">
         <div>
           <span><strong>Seed:</strong> {{ history.description }}</span>
@@ -27,13 +27,13 @@
         </div>
         {% endif %}
       </div>
-    </div>
-    <div class="players padded-border">
-      <h2>Player Information</h2>
+    </details>
+    <details class="players padded-border align-start">
+      <summary>Player Information</summary>
       <div class="container">
       {% include "partials/players.html.twig" with { players: history.players } %}
       </div>
-    </div>
+    </details>
   </div>
   <div class="container nowrap">
     {% for period in history.periods %}

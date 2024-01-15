@@ -13,6 +13,18 @@ body {
   flex-direction: column;
 }
 
+.align-start {
+  align-self: flex-start;
+}
+
+.players-list {
+  list-style: none;
+}
+
+summary {
+  font-size: large;
+}
+
 .padded-border {
   border: black 1px solid;
   padding: 5px;
