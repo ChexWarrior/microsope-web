@@ -1,12 +1,11 @@
 <!-- The scenes container holds all the scenes belonging to this event -->
 <div class="scenes container nowrap" data-event-place="{{ event.place }}"
- data-event-id="{{ event.id }}">
+data-event-id="{{ event.id }}" hx-get="/event/show-scenes/{{event.id}}" hx-trigger="dblclick" hx-swap="outerHTML">
  <!-- The card will hold the actual event information -->
-  <div class="event turned card" hx-get="/scenes/{{event.id}}" hx-trigger="dblclick" hx-target="#scene-swap-{{event.id}}">
+  <div class="event turned card">
     <p>{{ event.description }}</p>
-    {% include "partials/tone.html.twig" with { tone: period.tone.value } %}
+    {% include "partials/tone.html.twig" with { tone: event.tone.value } %}
     <span class="scene-count">{{ numScenes }}</span>
   </div>
   <!-- Scenes will fill in here when requested -->
-  <div id="scene-swap-{{event.id}}" class="container nowrap"></div>
 </div>
