@@ -29,6 +29,7 @@ class History
     private ?string $focus = null;
 
     #[ORM\OneToMany(mappedBy: 'history', targetEntity: Period::class, orphanRemoval: true)]
+    #[ORM\OrderBy(["place" => "ASC"])]
     private Collection $periods;
 
     #[ORM\OneToMany(mappedBy: 'history', targetEntity: Player::class, orphanRemoval: true)]

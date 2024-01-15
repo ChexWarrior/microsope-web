@@ -15,6 +15,7 @@ class Event extends Term
     private ?Period $period = null;
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Scene::class, orphanRemoval: true, fetch: 'EXTRA_LAZY')]
+    #[ORM\OrderBy(["place" => "ASC"])]
     private Collection $scenes;
 
     #[ORM\ManyToOne]
