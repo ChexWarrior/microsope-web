@@ -33,6 +33,10 @@ class Period extends Term
         return $this;
     }
 
+    public function getHistory(): ?History {
+        return $this->history;
+    }
+
     /**
      * @return Collection<int, Event>
      */
