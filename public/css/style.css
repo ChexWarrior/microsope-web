@@ -17,6 +17,10 @@ body {
   align-self: flex-start;
 }
 
+.players-list {
+  list-style: none;
+}
+
 summary {
   font-size: large;
 }

@@ -1,9 +1,12 @@
+<ul class="players-list">
 {% for player in players %}
-  <div class="{{ player.active is empty ? ' inactive' : '' }}">
-    <h3>{{ player.name }}</h3>
+  <li>
+    <h3 {% if not player.active %} class="inactive" {% endif %}>{{ player.name }}</h3>
     {% if player.legacy and player.active %}
-      <br>
-      <span class="legacy">{{ player.legacy }}</span>
+      <ul>
+        <li>{{ player.legacy }}</li>
+      </ul>
     {% endif %}
-  </div>
+  </li>
 {% endfor %}
+</ul>
