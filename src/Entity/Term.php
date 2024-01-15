@@ -6,6 +6,10 @@ use App\Enum\Tone;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\MappedSuperclass;
 
+/**
+ * Holds the common properties among Period, Event and Scene classes.
+ * @package App\Entity
+ */
 #[MappedSuperclass()]
 abstract class Term
 {
