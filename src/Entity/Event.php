@@ -2,29 +2,14 @@
 
 namespace App\Entity;
 
-use App\Enum\Tone;
 use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
-class Event
+class Event extends Term
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column]
-    private ?int $place = null;
-
-    #[ORM\Column(length: 255, enumType: Tone::class)]
-    private ?Tone $tone = null;
-
-    #[ORM\Column(length: 1000)]
-    private ?string $description = null;
-
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Period $period = null;
@@ -39,47 +24,6 @@ class Event
     public function __construct()
     {
         $this->scenes = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getPlace(): ?int
-    {
-        return $this->place;
-    }
-
-    public function setPlace(int $place): self
-    {
-        $this->place = $place;
-
-        return $this;
-    }
-
-    public function getTone(): Tone
-    {
-        return $this->tone;
-    }
-
-    public function setTone(Tone $tone): self
-    {
-        $this->tone = $tone;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
     }
 
     public function getPeriod(): ?Period
