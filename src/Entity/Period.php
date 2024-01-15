@@ -15,6 +15,7 @@ class Period extends Term
     private ?History $history = null;
 
     #[ORM\OneToMany(mappedBy: 'period', targetEntity: Event::class, orphanRemoval: true)]
+    #[ORM\OrderBy(["place" => "ASC"])]
     private Collection $events;
 
     #[ORM\ManyToOne]
@@ -31,6 +32,10 @@ class Period extends Term
         $this->history = $history;
 
         return $this;
+    }
+
+    public function getHistory(): ?History {
+        return $this->history;
     }
 
     /**
