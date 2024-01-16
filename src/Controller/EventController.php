@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\Period;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,4 +28,11 @@ class EventController extends AbstractController
         ]);
     }
 
+    #[Route('/period/{id}/events')]
+    public function getEventsFromPeriod(Period $period): Response
+    {
+        return $this->render('partials/event-nav-dropdown.html.twig', [
+            'events' => $period->getEvents(),
+        ]);
+    }
 }

@@ -1,0 +1,7 @@
+{% if events|length > 0 %}
+  <select class="events">
+    {% for event in events %}
+      <option value="{{ event.id }}">Event {{ event.place }}</option>
+    {% endfor %}
+  </select>
+{% endif %}
