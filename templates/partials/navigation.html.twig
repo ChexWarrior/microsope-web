@@ -5,13 +5,13 @@
     <option value="{{ period.id }}">Period {{ period.place }}</option>
   {% endfor %}
   </select>
+  
+  <!-- On initial load build the events dropdown for the first period -->
   {% if periods[0].events|length > 0 %}
   <select class="events">
     {% for event in periods[0].events %}
-      <option value="{{ event.id }}">Event
-        {{ event.place }}</option>
+      <option value="{{ event.id }}">Event {{ event.place }}</option>
     {% endfor %}
   </select>
   {% endif %}
 </div>
-<!-- On initial load build the events dropdown for the first period -->
