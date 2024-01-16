@@ -6,13 +6,7 @@
   <!-- Top Container -->
   <div class="container">
     <details class="navigation padded-border align-start">
-      <summary>Navigation</summary>
-      <div class="container">
-
-      </div>
-      <div class="container">
-        <!-- Contain event and period preview -->
-      </div>
+      {% include "partials/navigation.html.twig" with { periods: history.periods } %}
     </details>
     <details class="history padded-border align-start">
       <summary>History Information</summary>
