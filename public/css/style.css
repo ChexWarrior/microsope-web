@@ -9,6 +9,10 @@ body {
   padding: 5px;
 }
 
+.card.focus-border {
+  border: red 5px dashed;
+}
+
 .column {
   flex-direction: column;
 }
