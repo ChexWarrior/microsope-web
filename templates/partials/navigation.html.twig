@@ -1,6 +1,6 @@
 <summary>Navigation</summary>
 <div class="container">
-  <select id="card-focus">
+  <select id="card-focus" class="flex-start">
   <option selected value="">-- Select a Period or Event --</option>
   {% for period in periods %}
     <option value="period-{{period.id}}">
@@ -13,4 +13,5 @@
     {% endif %}
   {% endfor %}
   </select>
+  <textarea id="card-preview"></textarea>
 </div>

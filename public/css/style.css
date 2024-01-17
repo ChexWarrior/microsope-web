@@ -13,6 +13,10 @@ body {
   border: red 5px solid;
 }
 
+.flex-start {
+  align-self: flex-start;
+}
+
 .column {
   flex-direction: column;
 }
