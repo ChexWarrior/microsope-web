@@ -1,21 +1,15 @@
 <summary>Navigation</summary>
 <div class="container">
-  <select class="periods" hx-target="#events-nav">
+  <select id="card-focus">
   {% for period in periods %}
-    <option value="{{ period.id }}" hx-get="/period/{{period.id}}/events">
-      Period {{ period.place }}
+    <option value="period-{{period.id}}">
+      <strong>Period {{ period.place }}</strong>
     </option>
+    {% if period.events|length > 0 %}
+      {% for event in period.events %}
+        <option value="event-{{event.id}}">-- Event {{event.place}}</option>
+      {% endfor %}
+    {% endif %}
   {% endfor %}
   </select>
-
-  <!-- On initial load build the events dropdown for the first period -->
-  <div id="events-nav">
-  {% if periods[0].events|length > 0 %}
-  <select class="events">
-    {% for event in periods[0].events %}
-      <option value="{{ event.id }}">Event {{ event.place }}</option>
-    {% endfor %}
-  </select>
-  {% endif %}
-  </div>
 </div>

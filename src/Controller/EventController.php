@@ -27,12 +27,4 @@ class EventController extends AbstractController
             'numScenes' => $event->getScenes()->count()
         ]);
     }
-
-    #[Route('/period/{id}/events')]
-    public function getEventsFromPeriod(Period $period): Response
-    {
-        return $this->render('partials/event-nav-dropdown.html.twig', [
-            'events' => $period->getEvents(),
-        ]);
-    }
 }

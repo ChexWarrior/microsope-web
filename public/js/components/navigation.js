@@ -1,19 +1,10 @@
 htmx.onLoad(function(content) {
   // Grab selectors for period and event
-  const periodSelect = document.querySelector('select.periods');
-  const eventSelect = document.querySelector('select.events');
+  const cardSelector = document.querySelector('#card-focus');
 
-  if (periodSelect) {
-    periodSelect.addEventListener('change', function (e) {
-      // Set focus to the period.
-      focusCard(`period-${e.target.value}`);
-    });
-  }
-
-  if (eventSelect) {
-    eventSelect.addEventListener('change', function (e) {
-      // Set focus to the event.
-      focusCard(`event-${e.target.value}`);
+  if (cardSelector) {
+    cardSelector.addEventListener('change', function(e) {
+      focusCard(e.target.value);
     });
   }
 });
@@ -23,7 +14,7 @@ function focusCard(id) {
   const focusedCard = document.querySelector(`#${id} > .card`);
   focusedCard.scrollIntoView({
     'inline': 'center',
-    'block': 'center'
+    'block': 'center',
   });
 
   // Remove highlight from any previous card.
