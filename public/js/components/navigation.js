@@ -14,7 +14,6 @@ htmx.onLoad(function(content) {
     eventSelect.addEventListener('change', function (e) {
       // Set focus to the event.
       focusCard(`event-${e.target.value}`);
-
     });
   }
 });
@@ -22,7 +21,10 @@ htmx.onLoad(function(content) {
 function focusCard(id) {
   // Scroll to card.
   const focusedCard = document.querySelector(`#${id} > .card`);
-  focusedCard.scrollIntoView();
+  focusedCard.scrollIntoView({
+    'inline': 'center',
+    'block': 'center'
+  });
 
   // Remove highlight from any previous card.
   const highlightedCards = document.querySelectorAll('.card');
@@ -32,5 +34,4 @@ function focusCard(id) {
 
   // Add highlight to current card.
   focusedCard.classList.add('focus-border');
-
 }
