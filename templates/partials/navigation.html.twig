@@ -1,13 +1,14 @@
 <summary>Navigation</summary>
 <div class="container">
   <select id="card-focus">
+  <option selected value="">-- Select a Period or Event --</option>
   {% for period in periods %}
     <option value="period-{{period.id}}">
-      <strong>Period {{ period.place }}</strong>
+      <strong>Period {{ period.place + 1}}</strong>
     </option>
     {% if period.events|length > 0 %}
       {% for event in period.events %}
-        <option value="event-{{event.id}}">-- Event {{event.place}}</option>
+        <option value="event-{{event.id}}">-- Event {{event.place + 1}}</option>
       {% endfor %}
     {% endif %}
   {% endfor %}
