@@ -10,7 +10,7 @@ body {
 }
 
 .card.focus-border {
-  border: red 5px dashed;
+  border: red 5px solid;
 }
 
 .column {
