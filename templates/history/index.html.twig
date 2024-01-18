@@ -4,7 +4,7 @@
 
 {% block body %}
   <!-- Top Container -->
-  <div class="container">
+  <div id="information" class="container">
     <details class="history padded-border align-start">
       <summary>History Information</summary>
       <div class="container">
@@ -35,9 +35,12 @@
       </div>
     </details>
   </div>
-  <div class="container nowrap">
+  <div class="nav-arrow left"><</div>
+  <div id="board" class="container nowrap">
     {% for period in history.periods %}
-      {% include "partials/period.html.twig" with { period: period, numScenesByEvent: numScenesByEvent } %}
+      {% include "partials/period.html.twig" with {
+        period: period, numScenesByEvent: numScenesByEvent } %}
     {% endfor %}
   </div>
+  <div class="nav-arrow right">></div>
 {% endblock %}

@@ -1,5 +1,5 @@
   <!-- The events container will hold all the events belonging to this period -->
-  <div class="events container column" data-period-place="{{ period.place }}" data-period-id="{{ period.id }}">
+  <div id="period-{{period.id}}" class="events container column" data-period-place="{{ period.place }}" data-period-id="{{ period.id }}">
     <!-- The card will hold the actual period information -->
     <div class="period card">
       <p>{{ period.description }}</p>
