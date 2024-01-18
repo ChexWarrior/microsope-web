@@ -1,0 +1,20 @@
+<summary>Navigation</summary>
+<div class="container">
+  <div class="card-focus" class="flex-start">
+  {% for period in periods %}
+    <details>
+      <summary><a href="#period-{{period.id}}">
+        Period {{period.place + 1}}</a>
+      </summary>
+      {% if period.events|length > 0 %}
+        <ul>
+        {% for event in period.events %}
+          <li>Event {{event.place + 1}}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    </details>
+  {% endfor %}
+  </div>
+  <textarea id="card-preview"></textarea>
+</div>

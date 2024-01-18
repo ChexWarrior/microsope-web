@@ -9,6 +9,7 @@ body {
   padding: 5px;
   margin: 5px;
   color: purple;
+  cursor: pointer;
 }
 
 .left {
