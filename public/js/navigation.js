@@ -4,24 +4,29 @@ htmx.onLoad(function(content) {
   const rightNav = document.querySelector('.nav-arrow.right');
   let scrollInterval;
 
-  // Start scrolling on mouse down
+  // Scroll with click and mouse down.
+  leftNav.addEventListener('dblclick', e => scrollBoard(-9999, board));
+  leftNav.addEventListener('click', e => scrollBoard(-200, board));
   leftNav.addEventListener('mousedown', e => {
-    scrollInterval = scrollBoard(true, board)
+    scrollInterval = setInterval(scrollBoard, 100, -200, board);
   });
-  leftNav.addEventListener('mouseup', e => clearInterval(scrollInterval));
-
+  rightNav.addEventListener('dblclick', e => scrollBoard(9999, board))
+  rightNav.addEventListener('click', e => scrollBoard(200, board));
   rightNav.addEventListener('mousedown', e => {
-    scrollInterval = scrollBoard(false, board)
+    scrollInterval = setInterval(scrollBoard, 100, 200, board);
   });
-  rightNav.addEventListener('mouseup', e => clearInterval(scrollInterval));
+
+  // Stop scrolling on mouse up or mouse leave.
+  ['mouseup', 'mouseleave'].forEach(eventType => {
+    leftNav.addEventListener(eventType, e => clearInterval(scrollInterval));
+    rightNav.addEventListener(eventType, e => clearInterval(scrollInterval));
+  });
 });
 
-function scrollBoard(toLeft, scrollElement) {
-  return setInterval(function() {
-    scrollElement.scrollBy({
-      'top': 0,
-      'left': toLeft ? -200 : 200,
-      'behavior': 'smooth'
-    });
-  }, 100);
+function scrollBoard(scrollAmt, scrollElement) {
+  scrollElement.scrollBy({
+    'top': 0,
+    'left': scrollAmt,
+    'behavior': 'smooth'
+  });
 }
