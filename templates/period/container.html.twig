@@ -4,8 +4,9 @@
     <div class="period card">
       <p>{{ period.description }}</p>
       {% include "common/tone.html.twig" with { tone: period.tone.value } %}
+      {% include "common/add-edit-term.html.twig" with { type: "period", term: period }%}
     </div>
     {% for event in period.events %}
-      {% include "event/event.html.twig" with { event: event, numScenes: numScenesByEvent[event.id], scenes: [] } %}
+      {% include "event/container.html.twig" with { event: event, numScenes: numScenesByEvent[event.id], scenes: [] } %}
     {% endfor %}
   </div>

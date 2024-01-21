@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\History;
 use App\Entity\Player;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -37,6 +38,15 @@ class PlayerRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findAllByActiveAndHistory(History $history): array {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.active = TRUE')
+            ->andWhere('p.history = :history')
+            ->setParameter('history', $history)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

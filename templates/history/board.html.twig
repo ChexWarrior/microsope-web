@@ -1,0 +1,9 @@
+{% if showForm|default(false) %}
+  <div hx-swap-oob="true" id="term-dialog" class="backdrop hidden"></div>
+{% endif %}
+{% for period in periods %}
+  {% include "period/container.html.twig" with {
+    period: period, numScenesByEvent: numScenesByEvent } %}
+{% else %}
+  {% include "common/add-first-term.html.twig" with { type: "period", parentId: parentId } %}
+{% endfor %}

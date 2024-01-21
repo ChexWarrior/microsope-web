@@ -1,4 +1,5 @@
 <div class="scene card">
   <p>{{ scene.description }}</p>
   {% include "common/tone.html.twig" with { tone: scene.tone.value } %}
+  {% include "common/add-edit-term.html.twig" with { type: "scene", term: scene }%}
 </div>

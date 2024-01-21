@@ -18,10 +18,6 @@ class Event extends Term
     #[ORM\OrderBy(["place" => "ASC"])]
     private Collection $scenes;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Player $createdBy = null;
-
     public function __construct()
     {
         $this->scenes = new ArrayCollection();
@@ -65,18 +61,6 @@ class Event extends Term
                 $scene->setEvent(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getCreatedBy(): ?Player
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(?Player $createdBy): self
-    {
-        $this->createdBy = $createdBy;
 
         return $this;
     }

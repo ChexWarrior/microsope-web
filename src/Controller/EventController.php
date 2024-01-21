@@ -17,7 +17,7 @@ class EventController extends AbstractController
         #[MapQueryParameter(filter: \FILTER_VALIDATE_BOOL)] bool $showScenes
     ): Response
     {
-        return $this->render('event/event.html.twig', [
+        return $this->render('event/container.html.twig', [
             'event' => $event,
             'numScenes' => $event->getScenes()->count(),
             'scenes' => $showScenes ? $event->getScenes() : [],

@@ -18,6 +18,10 @@ abstract class Term
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Player $createdBy = null;
+
     #[ORM\Column]
     private ?int $place = null;
 
@@ -64,6 +68,18 @@ abstract class Term
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?Player
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(Player $player): self
+    {
+        $this->createdBy = $player;
 
         return $this;
     }

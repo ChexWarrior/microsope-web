@@ -37,10 +37,8 @@
   </div>
   <div class="nav-arrow left"><</div>
   <div id="board" class="container nowrap">
-    {% for period in history.periods %}
-      {% include "period/period.html.twig" with {
-        period: period, numScenesByEvent: numScenesByEvent } %}
-    {% endfor %}
+    {% include "history/board.html.twig" with { periods: history.periods, numScenesByEvent: numScenesByEvent, parentId: history.id } %}
   </div>
   <div class="nav-arrow right">></div>
+  <div id="term-dialog" class="backdrop hidden"></div>
 {% endblock %}

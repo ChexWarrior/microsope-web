@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\History;
 use App\Entity\Period;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +39,41 @@ class PeriodRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findLastPlaceByHistory(History $history): int
+    {
+        $period = $this->createQueryBuilder('p')
+            ->andWhere('p.history = :history')
+            ->setParameter('history', $history)
+            ->orderBy('p.place', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult();
+
+        return $period->getPlace();
+    }
+
+    public function findByPlace(int $place, History $history): Period
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.history = :history')
+            ->setParameter('history', $history)
+            ->andWhere('p.place = :place')
+            ->setParameter('place', $place)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    public function findAllWithPlaceGreaterThanOrEqual(int $place, History $history): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.history = :history')
+            ->setParameter('history', $history)
+            ->andWhere('p.place >= :place')
+            ->setParameter('place', $place)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

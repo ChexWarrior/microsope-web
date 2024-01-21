@@ -1,0 +1,40 @@
+<div id="term-dialog" class="backdrop">
+  <div class="add-term dialog">
+    <strong>{{ title }}</strong>
+    <form method="post" {{ htmx_attrs ? htmx_attrs|raw : '' }}>
+      <label for="description">Description</label>
+      <br>
+      <textarea name="description" rows="10">{{ term.description }}</textarea>
+      <br><br>
+      <fieldset>
+        <legend>Select a Tone</legend>
+        <input {{ term.tone.value == "light" ? "checked" : "" }} type="radio" name="tone" value="light"/>
+        <label for="light">Light</label>
+        <input {{ term.tone.value == "dark" ? "checked" : "" }} type="radio" name="tone" value="dark"/>
+        <label for="dark">Dark</label>
+      </fieldset>
+      <br><br>
+      <label for="order">Order</label>
+      <select name="order">
+        {% for place in range(0, lastPlace) %}
+          <option {{ term.place == place ? "selected" : "" }} value="{{ place }}">{{ place + 1 }}</option>
+        {% endfor %}
+      </select>
+      <br><br>
+      <label for="player">Player</label>
+      <select name="player">
+        {% for player in players %}
+          {% if player.active %}
+            <option {{ term.createdBy.id == player.id ? "selected" : ""  }} value="{{ player.id }}">
+              {{ player.name }}
+            </option>
+          {% endif %}
+        {% endfor %}
+      </select>
+      <input type="hidden" value="{{parentId}}" name="parent"/>
+      <br><br>
+      <button value="submit">Submit</button>
+      <button hx-get="/history/form/hide" hx-target="#term-dialog" hx-swap="outerHTML" value="cancel">Cancel</button>
+    </form>
+  </div>
+</div>

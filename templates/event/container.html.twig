@@ -8,9 +8,12 @@
     hx-get="/event/{{ event.id }}?showScenes={{ scenes|length > 0 ? 0 : 1 }}">
     <p>{{ event.description }}</p>
     {% include "common/tone.html.twig" with { tone: event.tone.value } %}
-    <span class="scene-count">{{ numScenes }}</span>
+    <div class="event-bottom">
+      {% include "common/add-edit-term.html.twig" with { type: "event", term: event }%}
+      <span class="scene-count">{{ numScenes }}</span>
+    </div>
   </div>
   {% for scene in scenes %}
-    {% include "scene/scene.html.twig" with { scene: scene } %}
+    {% include "scene/card.html.twig" with { scene: scene } %}
   {% endfor %}
 </div>
