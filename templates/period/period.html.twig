@@ -6,6 +6,6 @@
       {% include "common/tone.html.twig" with { tone: period.tone.value } %}
     </div>
     {% for event in period.events %}
-      {% include "event/event-hide-scenes.html.twig" with { event: event, numScenes: numScenesByEvent[event.id] } %}
+      {% include "event/event.html.twig" with { event: event, numScenes: numScenesByEvent[event.id], scenes: [] } %}
     {% endfor %}
   </div>
