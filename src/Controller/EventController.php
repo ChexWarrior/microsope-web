@@ -13,7 +13,7 @@ class EventController extends AbstractController
     #[Route('/event/show-scenes/{id}', name: 'event_show_scenes', methods: 'GET')]
     public function getEventWithScenes(Event $event): Response
     {
-        return $this->render('partials/event-show-scenes.html.twig', [
+        return $this->render('event/event-show-scenes.html.twig', [
             'event' => $event,
             'numScenes' => $event->getScenes()->count()
         ]);
@@ -22,7 +22,7 @@ class EventController extends AbstractController
     #[Route('/event/hide-scenes/{id}', name: 'event_hide_scenes', methods: 'GET')]
     public function getEventNoScenes(Event $event): Response
     {
-        return $this->render('partials/event-hide-scenes.html.twig', [
+        return $this->render('event/event-hide-scenes.html.twig', [
             'event' => $event,
             'numScenes' => $event->getScenes()->count()
         ]);
