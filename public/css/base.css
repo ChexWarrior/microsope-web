@@ -1,0 +1,40 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2em;
+  padding: 5px;
+}
+
+.flex-start {
+  align-self: flex-start;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.align-start {
+  align-self: flex-start;
+}
+
+summary {
+  font-size: large;
+}
+
+.padded-border {
+  border: black 1px solid;
+  padding: 5px;
+}
+
+h3 {
+  margin: 0;
+}
+
+.nowrap {
+  flex-wrap: nowrap;
+  overflow: scroll;
+}

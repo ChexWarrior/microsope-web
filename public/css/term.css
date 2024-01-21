@@ -1,0 +1,69 @@
+/**
+ * Common class for Periods, Events and Scenes.
+ * - Always keep same dimensions (based on viewport)
+ * - Hide overflow but on hover scroll to show all text...
+ */
+ .card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border: black 2px solid;
+  border-radius: 2%;
+  padding: 3px;
+  height: 280px;
+  width: 200px;
+}
+
+.turned {
+  height: 200px;
+  width: 280px;
+}
+
+.card p {
+  flex-direction: column;
+  margin: 2px;
+  max-height: calc(100% * 3/4);
+  overflow: scroll;
+  text-overflow: ellipsis;
+}
+
+.period {
+  background-color: #f5abab;
+}
+
+.event {
+  margin-top: 5px;
+  background-color: #a5ec93;
+}
+
+.scene {
+  background-color: #809ce4;
+}
+
+.scene-count {
+  font-size: large;
+  align-self: flex-end;
+}
+
+.events {
+  flex: 1 0;
+}
+
+/** Tone styles */
+.tone {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: black 1px solid;
+  min-height: 40px;
+}
+
+.light {
+  background-color: white;
+}
+
+.dark {
+  background-color: black;
+}

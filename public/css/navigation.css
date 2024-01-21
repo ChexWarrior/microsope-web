@@ -1,0 +1,17 @@
+.nav-arrow {
+  font-size: 7vh;
+  position: fixed;
+  bottom: 50%;
+  padding: 5px;
+  margin: 5px;
+  color: purple;
+  cursor: pointer;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}

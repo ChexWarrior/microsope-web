@@ -1,0 +1,8 @@
+.players-list {
+  list-style: none;
+}
+
+.inactive {
+  font-style: italic;
+  color: grey;
+}
