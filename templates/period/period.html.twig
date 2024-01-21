@@ -3,9 +3,9 @@
     <!-- The card will hold the actual period information -->
     <div class="period card">
       <p>{{ period.description }}</p>
-      {% include "partials/tone.html.twig" with { tone: period.tone.value } %}
+      {% include "common/tone.html.twig" with { tone: period.tone.value } %}
     </div>
     {% for event in period.events %}
-      {% include "partials/event-hide-scenes.html.twig" with { event: event, numScenes: numScenesByEvent[event.id] } %}
+      {% include "event/event.html.twig" with { event: event, numScenes: numScenesByEvent[event.id], scenes: [] } %}
     {% endfor %}
   </div>
