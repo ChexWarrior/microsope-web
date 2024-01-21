@@ -21,8 +21,8 @@
           <h3>Palette</h3>
           <hr>
           <div class="container">
-            {% include "partials/palette.html.twig" with { title: 'Excluded', items: history.excluded } %}
-            {% include "partials/palette.html.twig" with { title: 'Included', items: history.included } %}
+            {% include "history/palette.html.twig" with { title: 'Excluded', items: history.excluded } %}
+            {% include "history/palette.html.twig" with { title: 'Included', items: history.included } %}
           </div>
         </div>
         {% endif %}
@@ -31,14 +31,14 @@
     <details class="players padded-border align-start">
       <summary>Player Information</summary>
       <div class="container">
-      {% include "partials/players.html.twig" with { players: history.players } %}
+      {% include "history/players.html.twig" with { players: history.players } %}
       </div>
     </details>
   </div>
   <div class="nav-arrow left"><</div>
   <div id="board" class="container nowrap">
     {% for period in history.periods %}
-      {% include "partials/period.html.twig" with {
+      {% include "period/period.html.twig" with {
         period: period, numScenesByEvent: numScenesByEvent } %}
     {% endfor %}
   </div>
