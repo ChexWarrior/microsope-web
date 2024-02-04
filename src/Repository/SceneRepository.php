@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Event;
 use App\Entity\History;
+use App\Entity\Period;
 use App\Entity\Scene;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -53,6 +54,28 @@ class SceneRepository extends ServiceEntityRepository
             GROUP BY e.id'
         );
         $query->setParameter(':history', $history);
+        $results = $query->getArrayResult();
+
+        // Convert to array indexed by event id
+        foreach ($results as $result) {
+            ['event_id' => $eventId, 'numScenes' => $numScenes] = $result;
+            $numScenesByEvent[$eventId] = $numScenes;
+        }
+
+        return $numScenesByEvent;
+    }
+
+    public function getNumScenesForEventsInPeriod(Period $period): array {
+        $entityManager = $this->getEntityManager();
+        $numScenesByEvent = [];
+        $query = $entityManager->createQuery(
+            'SELECT COUNT(s) numScenes, e.id event_id
+            FROM App\Entity\Event e
+            JOIN e.scenes s
+            WHERE e.period = :period
+            GROUP BY e.id'
+        );
+        $query->setParameter(':period', $period);
         $results = $query->getArrayResult();
 
         // Convert to array indexed by event id

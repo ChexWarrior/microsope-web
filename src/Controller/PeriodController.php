@@ -2,96 +2,61 @@
 
 namespace App\Controller;
 
+use App\Entity\History;
 use App\Entity\Period;
-use App\Enum\Tone;
 use App\Repository\HistoryRepository;
 use App\Repository\PeriodRepository;
 use App\Repository\PlayerRepository;
+use App\Repository\SceneRepository;
 use App\Service\HtmlFormatter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PeriodController extends AbstractController
+class PeriodController extends TermController
 {
     public function __construct(
-        private PlayerRepository $playerRepository,
         private PeriodRepository $periodRepository,
         private HistoryRepository $historyRepository,
         private EntityManagerInterface $entityManager,
-    ) {}
+        private SceneRepository $sceneRepository,
+        PlayerRepository $playerRepository
+    ) {
+        parent::__construct($playerRepository);
+    }
+
+    #[Route('/period/{id}', name: 'period', methods: 'GET')]
+    public function getPeriod(Period $period): Response {
+        return $this->render('period/container.html.twig', [
+            'hideTermForm' => true,
+            'period' => $period,
+            'numScenesByEvent' => $this->sceneRepository->getNumScenesForEventsInPeriod($period),
+        ]);
+    }
 
     /**
-     * Creates the form for the first period of a history.
+     * Returns the form that will edit an existing period.
      *
-     * @param int $historyId
+     * @param Period $period - The period being edited.
+     * @return Response
      */
-    #[Route('/period/form', name: 'form_first_period', methods: 'GET')]
-    public function firstForm(#[MapQueryParameter] int $parentId): Response {
-        $history = $this->historyRepository->find($parentId);
+    #[Route('/period/{id}/edit-form', name: 'edit_form_period', methods: 'GET')]
+    public function editForm(Period $period): Response {
+        $lastPlace = $this->periodRepository->findLastPlaceByHistory($period->getHistory());
+        $players = $this->playerRepository->findAllByActiveAndHistory($period->getHistory());
 
-        // Get all active players.
-        $players = $this->playerRepository->findAllByActiveAndHistory($history);
+        $title = "Edit Period: " . ($period->getPlace() + 1);
         $htmxAttrs = [
-            'hx-post' => '/period/add',
+            'hx-post' => "/period/{$period->getId()}/edit",
             'hx-target' => '#board',
         ];
 
         return $this->render('history/term-form.html.twig', [
-            'title' => 'Add First Period',
-            'term' => [
-                'description' => '',
-                'place' => 0,
-                'tone' => ['value' => ''],
-                'createdBy' => ['id' => -1],
-            ],
-            'lastPlace' => 0,
-            'players' => $players,
-            'parentId' => $history->getId(),
-            'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
-        ]);
-    }
-
-    #[Route('/period/{id}/form', name: 'form_period', methods: 'GET')]
-    public function form(Period $period, #[MapQueryParameter] string $mode): Response
-    {
-        // Get the value of the last place for a valid period in history.
-        $lastPlace = $this->periodRepository->findLastPlaceByHistory($period->getHistory());
-
-        // Get all active players.
-        $players = $this->playerRepository->findAllByActiveAndHistory($period->getHistory());
-
-        if ($mode == "edit") {
-            $title = "Edit Period: " . ($period->getPlace() + 1);
-            $term = $period;
-            $htmxAttrs = [
-                'hx-post' => "/period/{$period->getId()}/edit",
-                'hx-target' => '#board',
-            ];
-        } else {
-            $title = "Add New Period";
-            $term = [
-                'description' => '',
-                'place' => $period->getPlace(),
-                'tone' => ['value' => ''],
-                'createdBy' => ['id' => -1],
-            ];
-            $htmxAttrs = [
-                'hx-post' => '/period/add',
-                'hx-target' => '#board',
-            ];
-
-            // Give new card option to be last in order.
-            $lastPlace += 1;
-        }
-
-        return $this->render('history/term-form.html.twig', [
             'title' => $title,
-            'term' => $term,
+            'term' => $period,
             'lastPlace' => $lastPlace,
             'players' => $players,
             'parentId' => $period->getHistory()->getId(),
@@ -99,28 +64,60 @@ class PeriodController extends AbstractController
         ]);
     }
 
+    /**
+     * Returns the form that will add a new period.
+     *
+     * @param History $history - The history the new period belongs to.
+     * @param int $defaultPlace - The default place for the new period.
+     */
+    #[Route('/period/{id}/add-form', name: 'add_form_period', methods: 'GET')]
+    public function addForm(
+        History $history,
+        #[MapQueryParameter(name:"place")] int $defaultPlace = 0
+    ): Response {
+        try {
+            $lastPlace = $this->periodRepository->findLastPlaceByHistory($history);
+        } catch (NoResultException $e) {
+            $lastPlace = -1;
+        }
+
+        $players = $this->playerRepository->findAllByActiveAndHistory($history);
+        $title = "Add New Period";
+        $term = [
+            'description' => '',
+            'place' => $defaultPlace,
+            'tone' => ['value' => ''],
+            'createdBy' => ['id' => -1],
+        ];
+        $htmxAttrs = [
+            'hx-post' => '/period/add',
+            'hx-target' => '#board',
+        ];
+
+        return $this->render('history/term-form.html.twig', [
+            'title' => $title,
+            'term' => $term,
+            'lastPlace' => $lastPlace + 1,
+            'players' => $players,
+            'parentId' => $history->getId(),
+            'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
+        ]);
+    }
+
     #[Route('/period/{id}/edit', name: 'edit_period', methods: 'POST')]
-    public function editPeriod(Period $period, Request $request): Response
-    {
-        // Get params.
-        // TODO: Validate request params.
-        $description = $request->getPayload()->get('description');
-        $tone = $request->getPayload()->get('tone');
-        $place = $request->getPayload()->get('order');
-        $playerId = $request->getPayload()->get('player');
-        $createdBy = $this->playerRepository->find($playerId);
+    public function editPeriod(Period $period, Request $request): Response {
+        $termParams = $this->parseTermParameters($request);
 
-        // Update period.
-        $period->setDescription($description);
-
-        if ($period->getPlace() !== $place) {
-            $periodToUpdate = $this->periodRepository->findByPlace($place, $period->getHistory());
+        // If we change the place of a period we need to swap with the period that exists in that place.
+        if ($period->getPlace() !== $termParams['place']) {
+            $periodToUpdate = $this->periodRepository->findByPlace($termParams['place'], $period->getHistory());
             $periodToUpdate->setPlace($period->getPlace());
         }
 
-        $period->setPlace($place);
-        $period->setTone(Tone::from($tone));
-        $period->setCreatedBy($createdBy);
+        $period->setPlace($termParams['place']);
+        $period->setDescription($termParams['description']);
+        $period->setTone($termParams['tone']);
+        $period->setCreatedBy($termParams['createdBy']);
         $this->entityManager->flush();
 
         // Regenerate the entire board.
@@ -132,16 +129,8 @@ class PeriodController extends AbstractController
 
     #[Route('/period/add', name: 'add_period', methods: 'POST')]
     public function addPeriod(Request $request): Response {
-        // Get params.
-        // TODO: Validate request params.
-        $description = $request->getPayload()->get('description');
-        $tone = $request->getPayload()->get('tone');
-        $place = $request->getPayload()->get('order');
-        $playerId = $request->getPayload()->get('player');
-        $historyId = $request->getPayload()->get('parent');
-
-        $createdBy = $this->playerRepository->find($playerId);
-        $history = $this->historyRepository->find($historyId);
+        $termParams = $this->parseTermParameters($request);
+        $history = $this->historyRepository->find($termParams['parentId']);
 
         try {
             $lastPlace = $this->periodRepository->findLastPlaceByHistory($history);
@@ -149,10 +138,10 @@ class PeriodController extends AbstractController
             $lastPlace = -1;
         }
 
-        // When adding a new card we need to move all after it up one in order.
-        if ($place <= $lastPlace) {
-            $periodsToUpdate = $this->periodRepository->findAllWithPlaceGreaterThanOrEqual($place, $history);
-
+        // When adding a new card we need to move all periods after it up one in order.
+        if ($termParams['place'] <= $lastPlace) {
+            $periodsToUpdate = $this->periodRepository
+                ->findAllWithPlaceGreaterThanOrEqual($termParams['place'], $history);
             /** @var Period $p */
             foreach ($periodsToUpdate as $p) {
                 $p->setPlace($p->getPlace() + 1);
@@ -160,17 +149,17 @@ class PeriodController extends AbstractController
         }
 
         $newPeriod = new Period();
-        $newPeriod->setDescription($description);
-        $newPeriod->setPlace($place);
-        $newPeriod->setTone(Tone::from($tone));
-        $newPeriod->setCreatedBy($createdBy);
+        $newPeriod->setDescription($termParams['description']);
+        $newPeriod->setPlace($termParams['place']);
+        $newPeriod->setTone($termParams['tone']);
+        $newPeriod->setCreatedBy($termParams['createdBy']);
         $newPeriod->setHistory($history);
         $this->entityManager->persist($newPeriod);
         $this->entityManager->flush();
 
         // Regenerate the entire board.
         return $this->redirectToRoute('history_board', [
-                'id' => $historyId
+                'id' => $history->getId()
             ]
         );
     }

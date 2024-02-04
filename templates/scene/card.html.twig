@@ -1,3 +1,10 @@
+{#
+  Renders a scene entity.
+
+  Variables:
+  * scene - The scene entity object.
+#}
+
 <div class="scene card">
   <p>{{ scene.description }}</p>
   {% include "common/tone.html.twig" with { tone: scene.tone.value } %}

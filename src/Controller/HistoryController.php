@@ -19,7 +19,6 @@ class HistoryController extends AbstractController
     {
         $numScenesByEvent = $this->sceneRepository->getNumScenesForEventsInHistory($history);
         return $this->render('history/index.html.twig', [
-            'controller_name' => 'HistoryController',
             'history' => $history,
             'numScenesByEvent' => $numScenesByEvent,
         ]);
@@ -30,7 +29,7 @@ class HistoryController extends AbstractController
     {
         $numScenesByEvent = $this->sceneRepository->getNumScenesForEventsInHistory($history);
         return $this->render('history/board.html.twig', [
-            'showForm' => true,
+            'hideTermForm' => true,
             'periods' => $history->getPeriods(),
             'numScenesByEvent' => $numScenesByEvent,
         ]);

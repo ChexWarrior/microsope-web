@@ -1,3 +1,15 @@
+{#
+  Renders a dialog to add or edit a term in target history.
+
+  Variables:
+  * title - The title for the dialog box.
+  * htmx_attrs - The HTMX attributes that determine the action of this dialog.
+  * term - A Term entity (Period, Event or Scene)
+  * players - The active players for this history.
+  * lastPlace - The largest place for the term in question.
+  * parentId - The id of the parent for this term.
+#}
+
 <div id="term-dialog" class="backdrop">
   <div class="add-term dialog">
     <strong>{{ title }}</strong>

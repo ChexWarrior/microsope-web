@@ -1,12 +1,25 @@
-  <!-- The events container will hold all the events belonging to this period -->
-  <div id="period-{{period.id}}" class="events container column" data-period-place="{{ period.place }}" data-period-id="{{ period.id }}">
-    <!-- The card will hold the actual period information -->
-    <div class="period card">
-      <p>{{ period.description }}</p>
-      {% include "common/tone.html.twig" with { tone: period.tone.value } %}
-      {% include "common/add-edit-term.html.twig" with { type: "period", term: period }%}
-    </div>
-    {% for event in period.events %}
-      {% include "event/container.html.twig" with { event: event, numScenes: numScenesByEvent[event.id], scenes: [] } %}
-    {% endfor %}
+{#
+  Renders a period and it's descendant terms.
+
+  Variables:
+  * hideTermForm - If true this will hide the add/edit term form on the page. Used in AJAX responses from HTMX.
+  * period - The period entity object.
+  * numScenesByEvent - The number of scenes for each of this period's events.
+#}
+
+{% if hideTermForm|default(false) %}
+  <div hx-swap-oob="true" id="term-dialog" class="backdrop hidden"></div>
+{% endif %}
+<div id="period-{{period.id}}" class="events container column" data-period-place="{{ period.place }}" data-period-id="{{ period.id }}">
+  <!-- The card will hold the actual period information -->
+  <div class="period card">
+    <p>{{ period.description }}</p>
+    {% include "common/tone.html.twig" with { tone: period.tone.value } %}
+    {% include "common/add-edit-term.html.twig" with { type: "period", edit_id: period.id, add_id: period.history.id, default_place: period.place } %}
   </div>
+  {% for event in period.events %}
+    {% include "event/container.html.twig" with { event: event, numScenes: numScenesByEvent[event.id] ?? 0, scenes: [] } %}
+  {% else %}
+    {% include "common/add-edit-term.html.twig" with { type: "event", add_id: period.id, show: true  } %}
+  {% endfor %}
+</div>

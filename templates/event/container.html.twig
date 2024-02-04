@@ -1,3 +1,12 @@
+{#
+  Renders an event and its descendents.
+
+  Variables:
+  * event - The event entity object.
+  * numScenes - The number of scenes related to this event.
+  * scenes - A list of scene entities related to this event.
+#}
+
 <div id="event-{{ event.id }}" class="scenes container nowrap"
   data-event-place="{{ event.place }}">
   <div class="event turned card"
@@ -9,7 +18,7 @@
     <p>{{ event.description }}</p>
     {% include "common/tone.html.twig" with { tone: event.tone.value } %}
     <div class="event-bottom">
-      {% include "common/add-edit-term.html.twig" with { type: "event", term: event }%}
+      {% include "common/add-edit-term.html.twig" with { type: "event", edit_id: event.id, add_id: event.period.id, default_place: event.place } %}
       <span class="scene-count">{{ numScenes }}</span>
     </div>
   </div>
