@@ -32,6 +32,7 @@ class EventController extends TermController
         #[MapQueryParameter(filter: \FILTER_VALIDATE_BOOL)] bool $showScenes
     ): Response {
         return $this->render('event/container.html.twig', [
+            'hideTermForm' => true,
             'event' => $event,
             'numScenes' => $event->getScenes()->count(),
             'scenes' => $showScenes ? $event->getScenes() : [],
@@ -44,7 +45,7 @@ class EventController extends TermController
      * @param Event $event - The event to edit.
      */
     #[Route('/event/{id}/edit-form', name: 'edit_form_event', methods: 'GET')]
-    public function edit(Event $event): Response {
+    public function editForm(Event $event): Response {
         $period = $event->getPeriod();
         try {
             $lastPlace = $this->eventRepository->findLastPlaceByPeriod($period);

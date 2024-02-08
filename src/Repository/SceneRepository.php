@@ -87,6 +87,42 @@ class SceneRepository extends ServiceEntityRepository
         return $numScenesByEvent;
     }
 
+    public function findLastPlaceByEvent(Event $event): int
+    {
+        $event = $this->createQueryBuilder('s')
+            ->andWhere('s.event = :event')
+            ->setParameter('event', $event)
+            ->orderBy('s.place', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult();
+
+        return $event->getPlace();
+    }
+
+    public function findAllWithPlaceGreaterThanOrEqual(int $place, Event $event): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.event = :event')
+            ->setParameter('event', $event)
+            ->andWhere('s.period >= :place')
+            ->setParameter('place', $place)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByPlace(int $place, Event $event): Scene
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.event = :event')
+            ->setParameter('event', $event)
+            ->andWhere('s.place = :place')
+            ->setParameter('place', $place)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+
 //    /**
 //     * @return Scene[] Returns an array of Scene objects
 //     */

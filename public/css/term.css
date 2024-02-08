@@ -79,3 +79,9 @@
   display: flex;
   align-items: flex-start;
 }
+
+/* Add/Edit Buttons for scenes need some adjustment. */
+.scenes >.add-edit-buttons {
+  width: auto;
+  align-items: center;
+}
