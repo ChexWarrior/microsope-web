@@ -1,0 +1,35 @@
+{#
+  Renders an event and its descendents.
+
+  Variables:
+  * event - The event entity object.
+  * numScenes - The number of scenes related to this event.
+  * scenes - A list of scene entities related to this event.
+  * hideTermForm - If true this will hide the add/edit term form on the page. Used in AJAX responses from HTMX.
+#}
+
+{% if hideTermForm|default(false) %}
+  <div hx-swap-oob="true" id="term-dialog" class="backdrop hidden"></div>
+{% endif %}
+<div id="event-{{ event.id }}" class="scenes container nowrap"
+  data-event-place="{{ event.place }}">
+  <div class="event turned card"
+    data-event-id="{{ event.id }}"
+    hx-trigger="dblclick"
+    hx-swap="outerHTML"
+    hx-target="#event-{{ event.id }}"
+    hx-get="/event/{{ event.id }}?showScenes={{ scenes|length > 0 ? 0 : 1 }}">
+    <p>{{ event.description }}</p>
+    {% include "common/tone.html.twig" with { tone: event.tone.value } %}
+    <div class="event-bottom">
+      {% include "common/add-edit-term.html.twig" with { type: "event", edit_id: event.id, add_id: event.period.id, default_place: event.place } %}
+      <span class="scene-count">{{ numScenes }}</span>
+    </div>
+  </div>
+  {% for scene in scenes %}
+    {% include "scene/card.html.twig" with { scene: scene } %}
+  {% endfor %}
+  {% if numScenes == 0 %}
+    {% include "common/add-edit-term.html.twig" with { type: "scene", add_id: event.id, show: true  } %}
+  {% endif %}
+</div>

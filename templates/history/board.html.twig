@@ -1,0 +1,21 @@
+{#
+  Renders the periods, events and scenes for a history.
+
+  If there are no periods will render a button to create the first period in history, otherwise will render all periods.
+
+  Variables:
+  * hideTermForm - If true this will hide the add/edit term form on the page. Used in AJAX responses from HTMX.
+  * periods - The periods of the history.
+  * numScenesByEvent - The number of scenes for each event in history.
+  * parentId - The id of target history for use in the form to create first period.
+#}
+
+{% if hideTermForm|default(false) %}
+  <div hx-swap-oob="true" id="term-dialog" class="backdrop hidden"></div>
+{% endif %}
+{% for period in periods %}
+  {% include "period/container.html.twig" with {
+    period: period, numScenesByEvent: numScenesByEvent } %}
+{% else %}
+  {% include "common/add-edit-term.html.twig" with { type: "period", add_id: parentId, show: true } %}
+{% endfor %}

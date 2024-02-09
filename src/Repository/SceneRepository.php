@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Event;
 use App\Entity\History;
+use App\Entity\Period;
 use App\Entity\Scene;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -63,6 +64,64 @@ class SceneRepository extends ServiceEntityRepository
 
         return $numScenesByEvent;
     }
+
+    public function getNumScenesForEventsInPeriod(Period $period): array {
+        $entityManager = $this->getEntityManager();
+        $numScenesByEvent = [];
+        $query = $entityManager->createQuery(
+            'SELECT COUNT(s) numScenes, e.id event_id
+            FROM App\Entity\Event e
+            JOIN e.scenes s
+            WHERE e.period = :period
+            GROUP BY e.id'
+        );
+        $query->setParameter(':period', $period);
+        $results = $query->getArrayResult();
+
+        // Convert to array indexed by event id
+        foreach ($results as $result) {
+            ['event_id' => $eventId, 'numScenes' => $numScenes] = $result;
+            $numScenesByEvent[$eventId] = $numScenes;
+        }
+
+        return $numScenesByEvent;
+    }
+
+    public function findLastPlaceByEvent(Event $event): int
+    {
+        $event = $this->createQueryBuilder('s')
+            ->andWhere('s.event = :event')
+            ->setParameter('event', $event)
+            ->orderBy('s.place', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult();
+
+        return $event->getPlace();
+    }
+
+    public function findAllWithPlaceGreaterThanOrEqual(int $place, Event $event): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.event = :event')
+            ->setParameter('event', $event)
+            ->andWhere('s.period >= :place')
+            ->setParameter('place', $place)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByPlace(int $place, Event $event): Scene
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.event = :event')
+            ->setParameter('event', $event)
+            ->andWhere('s.place = :place')
+            ->setParameter('place', $place)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
 
 //    /**
 //     * @return Scene[] Returns an array of Scene objects

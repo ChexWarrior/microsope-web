@@ -1,0 +1,26 @@
+{#
+  Creates the add and edit buttons for a term.
+
+  Variables:
+  * type - The type of term (period, event or scene).
+  * edit_id: The id of the term being edited.
+  * default_place - The default place of the new term.
+  * add_id: The id of the parent entity for term to be added.
+  * show - If true show buttons otherwise hide them
+#}
+
+{% set show = show|default(false) %}
+
+<div hx-target="#term-dialog" hx-swap="outerHTML"
+     class="add-edit-buttons {% if not show %}invisible{% endif %}">
+  {% if edit_id is defined %}
+    <button hx-get="/{{type}}/{{edit_id}}/edit-form">
+      Edit
+    </button>
+  {% endif %}
+  {% if add_id is defined %}
+    <button hx-get="/{{type}}/{{add_id}}/add-form{% if default_place is defined %}?place={{default_place}}{% endif %}">
+      Add
+    </button>
+  {% endif %}
+</div>

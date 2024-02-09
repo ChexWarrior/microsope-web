@@ -10,14 +10,36 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HistoryController extends AbstractController
 {
+    public function __construct(
+        private SceneRepository $sceneRepository,
+    ){}
+
     #[Route('/history/{id}', name: 'app_history', methods: 'GET')]
-    public function view(History $history, SceneRepository $sceneRepository): Response
+    public function view(History $history): Response
     {
-        $numScenesByEvent = $sceneRepository->getNumScenesForEventsInHistory($history);
+        $numScenesByEvent = $this->sceneRepository->getNumScenesForEventsInHistory($history);
         return $this->render('history/index.html.twig', [
-            'controller_name' => 'HistoryController',
             'history' => $history,
             'numScenesByEvent' => $numScenesByEvent,
         ]);
+    }
+
+    #[Route('/history/{id}/board', name: 'history_board', methods: 'GET')]
+    public function getBoard(History $history)
+    {
+        $numScenesByEvent = $this->sceneRepository->getNumScenesForEventsInHistory($history);
+        return $this->render('history/board.html.twig', [
+            'hideTermForm' => true,
+            'periods' => $history->getPeriods(),
+            'numScenesByEvent' => $numScenesByEvent,
+        ]);
+    }
+
+    #[Route('/history/form/hide', name: 'hide_form', methods: 'GET')]
+    public function hideForm(): Response
+    {
+        return new Response(
+            '<div id="term-dialog" class="backdrop hidden"></div>'
+        );
     }
 }

@@ -1,3 +1,11 @@
+{#
+  Renders the entire page for a history.
+
+  Variables:
+  * history - The history entity for this game.
+  * numScenesByEvent - The number of scenes that are within each event in this history.
+#}
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Hello History {{ history.id }} {% endblock %}
@@ -37,10 +45,8 @@
   </div>
   <div class="nav-arrow left"><</div>
   <div id="board" class="container nowrap">
-    {% for period in history.periods %}
-      {% include "period/period.html.twig" with {
-        period: period, numScenesByEvent: numScenesByEvent } %}
-    {% endfor %}
+    {% include "history/board.html.twig" with { periods: history.periods, numScenesByEvent: numScenesByEvent, parentId: history.id } %}
   </div>
   <div class="nav-arrow right">></div>
+  <div id="term-dialog" class="backdrop hidden"></div>
 {% endblock %}

@@ -12,11 +12,6 @@ class Scene extends Term
     #[ORM\JoinColumn(nullable: false)]
     private ?Event $event = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Player $createdBy = null;
-
-
     public function getEvent(): ?Event
     {
         return $this->event;
@@ -25,18 +20,6 @@ class Scene extends Term
     public function setEvent(?Event $event): self
     {
         $this->event = $event;
-
-        return $this;
-    }
-
-    public function getCreatedBy(): ?Player
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(?Player $createdBy): self
-    {
-        $this->createdBy = $createdBy;
 
         return $this;
     }

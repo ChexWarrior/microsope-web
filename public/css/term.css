@@ -67,3 +67,21 @@
 .dark {
   background-color: black;
 }
+
+.event-bottom {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.add-edit-buttons {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Add/Edit Buttons for scenes need some adjustment. */
+.scenes >.add-edit-buttons {
+  width: auto;
+  align-items: center;
+}
