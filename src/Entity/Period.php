@@ -14,7 +14,7 @@ class Period extends Term
     #[ORM\JoinColumn(nullable: false)]
     private ?History $history = null;
 
-    #[ORM\OneToMany(mappedBy: 'period', targetEntity: Event::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'period', targetEntity: Event::class, orphanRemoval: true, cascade: ['persist'])]
     #[ORM\OrderBy(["place" => "ASC"])]
     private Collection $events;
 

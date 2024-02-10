@@ -31,6 +31,17 @@ abstract class Term
     #[ORM\Column(length: 1000)]
     private ?string $description = null;
 
+    public static function build(?string $desc = null, ?Tone $tone = null, ?int $place = null, ?Player $createdBy = null) {
+        $class = get_called_class();
+        $instance = new $class();
+        $instance->setDescription($desc);
+        $instance->setTone($tone);
+        $instance->setPlace($place);
+        $instance->setCreatedBy($createdBy);
+
+        return $instance;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

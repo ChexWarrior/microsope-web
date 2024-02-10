@@ -105,7 +105,7 @@ class SceneRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->andWhere('s.event = :event')
             ->setParameter('event', $event)
-            ->andWhere('s.period >= :place')
+            ->andWhere('s.place >= :place')
             ->setParameter('place', $place)
             ->getQuery()
             ->getResult();
