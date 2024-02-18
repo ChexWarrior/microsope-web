@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Tests\Respository;
+namespace App\Tests\Repository;
 
 use App\Entity\History;
 use App\Entity\Period;
 use App\Entity\Player;
 use App\Enum\Tone;
-use App\Tests\DatabaseTestCase;
+use App\Tests\IntegrationTestCase;
 
-class PeriodRepositoryTest extends DatabaseTestCase
+class PeriodRepositoryTest extends IntegrationTestCase
 {
     /**
      * Creates db setup for tests using place as condition.

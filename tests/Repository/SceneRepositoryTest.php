@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Respository;
+namespace App\Tests\Repository;
 
 use App\Entity\Event;
 use App\Entity\History;
@@ -8,9 +8,9 @@ use App\Entity\Period;
 use App\Entity\Player;
 use App\Entity\Scene;
 use App\Enum\Tone;
-use App\Tests\DatabaseTestCase;
+use App\Tests\IntegrationTestCase;
 
-class SceneRepositoryTest extends DatabaseTestCase
+class SceneRepositoryTest extends IntegrationTestCase
 {
     /**
      * Sets up the database to test the SceneRepository methods which
