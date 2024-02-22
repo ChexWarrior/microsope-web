@@ -28,12 +28,23 @@ class History
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $focus = null;
 
-    #[ORM\OneToMany(mappedBy: 'history', targetEntity: Period::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'history', targetEntity: Period::class, orphanRemoval: true, cascade: ['persist'])]
     #[ORM\OrderBy(["place" => "ASC"])]
     private Collection $periods;
 
-    #[ORM\OneToMany(mappedBy: 'history', targetEntity: Player::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'history', targetEntity: Player::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $players;
+
+    public static function build(?string $desc = null, array $excluded = [], array $included = [], ?string $focus = null) {
+        $class = get_called_class();
+        $instance = new $class();
+        $instance->setDescription($desc);
+        $instance->setIncluded($included);
+        $instance->setExcluded($included);
+        $instance->setFocus($focus);
+
+        return $instance;
+    }
 
     public function __construct()
     {

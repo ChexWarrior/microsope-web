@@ -58,7 +58,7 @@ class EventRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
             ->andWhere('e.period = :period')
             ->setParameter('period', $period)
-            ->andWhere('e.period >= :place')
+            ->andWhere('e.place >= :place')
             ->setParameter('place', $place)
             ->getQuery()
             ->getResult();

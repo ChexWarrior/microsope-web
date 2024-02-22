@@ -25,20 +25,27 @@ class EmptyHistoryFixtures extends Fixture implements FixtureGroupInterface
 
         // Generate players.
         for ($i = 0; $i < $numPlayers; $i += 1) {
-            $player = new Player(name: $faker->firstName(), history: null, active: true, legacy: $faker->sentence(4), isLens: false);
+            $player = new Player(
+                name: $faker->firstName(),
+                history: null,
+                active: true,
+                legacy: $faker->sentence(4),
+                isLens: false
+            );
             $players[] = $player;
-            $manager->persist($player);
         }
 
         $players[$numPlayers - 1]->setActive(false);
 
         // Generate history.
-        $history = new History();
-        $history->setDescription($faker->sentence());
-        $history->setFocus($faker->words(3, true));
-        $history->setExcluded($faker->words(5));
-        $history->setIncluded($faker->words(5));
+        $history = History::build(
+            desc: $faker->sentence(),
+            focus: $faker->words(3, true),
+            included: $faker->words(5),
+            excluded: $faker->words(5)
+        );
         array_walk($players, fn (Player $p) => $history->addPlayer($p));
+
         $manager->persist($history);
         $manager->flush();
     }
