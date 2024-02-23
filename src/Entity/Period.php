@@ -6,12 +6,14 @@ use App\Repository\PeriodRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PeriodRepository::class)]
 class Period extends Term
 {
     #[ORM\ManyToOne(inversedBy: 'periods')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?History $history = null;
 
     #[ORM\OneToMany(mappedBy: 'period', targetEntity: Event::class, orphanRemoval: true, cascade: ['persist'])]

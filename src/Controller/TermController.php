@@ -6,11 +6,13 @@ use App\Enum\Tone;
 use App\Repository\PlayerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class TermController extends AbstractController
 {
     public function __construct(
-        protected PlayerRepository $playerRepository
+        protected PlayerRepository $playerRepository,
+        protected ValidatorInterface $validator
     ){}
     /**
      * Parses the common properties for terms from an incoming request.

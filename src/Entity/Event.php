@@ -6,12 +6,14 @@ use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event extends Term
 {
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?Period $period = null;
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Scene::class, orphanRemoval: true, cascade: ['persist'], fetch: 'EXTRA_LAZY')]

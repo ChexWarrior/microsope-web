@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EventController extends TermController
 {
@@ -21,9 +22,10 @@ class EventController extends TermController
         private PeriodRepository $periodRepository,
         private EventRepository $eventRepository,
         private EntityManagerInterface $entityManager,
-        PlayerRepository $playerRepository
+        PlayerRepository $playerRepository,
+        ValidatorInterface $validator
     ) {
-        parent::__construct($playerRepository);
+        parent::__construct($playerRepository, $validator);
     }
 
     #[Route('/event/{id}', name: 'event', methods: 'GET')]

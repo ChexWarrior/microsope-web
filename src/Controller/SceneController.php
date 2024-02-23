@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SceneController extends TermController
 {
@@ -21,10 +22,11 @@ class SceneController extends TermController
         private SceneRepository $sceneRepository,
         private EventRepository $eventRepository,
         private EntityManagerInterface $entityManager,
-        PlayerRepository $playerRepository
+        PlayerRepository $playerRepository,
+        ValidatorInterface $validator
     )
     {
-        parent::__construct($playerRepository);
+        parent::__construct($playerRepository, $validator);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PlayerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 class Player
@@ -14,19 +15,24 @@ class Player
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(min: 1, max: 255)]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'players')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?History $history = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?bool $active = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(min: 0, max: 255)]
     private ?string $legacy = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     private ?bool $lens = null;
 
     public function __construct(string $name, ?History $history, bool $active, ?string $legacy, bool $isLens)
