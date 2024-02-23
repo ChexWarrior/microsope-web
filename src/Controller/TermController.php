@@ -6,6 +6,8 @@ use App\Enum\Tone;
 use App\Repository\PlayerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class TermController extends AbstractController
@@ -30,5 +32,20 @@ abstract class TermController extends AbstractController
             'createdBy' => $this->playerRepository->find($playerId),
             'parentId' => $request->getPayload()->get('parent'),
         ];
+    }
+
+    /**
+     * Return validaton errors to client.
+     *
+     * @param ConstraintViolationListInterface $errors - List of errors to return to client.
+     * @param string $target - CSS selector to return errors on client.
+     */
+    protected function returnErrors(ConstraintViolationListInterface $errors, string $target): Response {
+        return $this->render('common/errors.html.twig', [
+            'errors' => $errors,
+        ], new Response('', Response::HTTP_BAD_REQUEST, [
+            'HX-Retarget' => $target,
+            'HX-Reswap' => 'outerHTML',
+        ]));
     }
 }

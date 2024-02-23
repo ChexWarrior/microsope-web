@@ -156,12 +156,18 @@ class PeriodController extends TermController
         $newPeriod->setTone($termParams['tone']);
         $newPeriod->setCreatedBy($termParams['createdBy']);
         $newPeriod->setHistory($history);
+
+        $errors = $this->validator->validate($newPeriod);
+        if (count($errors) > 0) {
+            return $this->returnErrors($errors, '#term-errors');
+        }
+
         $this->entityManager->persist($newPeriod);
         $this->entityManager->flush();
 
         // Regenerate the entire board.
         return $this->redirectToRoute('history_board', [
-                'id' => $history->getId()
+                'id' => $history->getId(),
             ]
         );
     }

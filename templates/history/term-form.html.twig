@@ -13,6 +13,7 @@
 <div id="term-dialog" class="backdrop">
   <div class="add-term dialog">
     <strong>{{ title }}</strong>
+    <div id="term-errors" class="hidden"></div>
     <form method="post" {{ htmx_attrs ? htmx_attrs|raw : '' }}>
       <label for="description">Description</label>
       <br>

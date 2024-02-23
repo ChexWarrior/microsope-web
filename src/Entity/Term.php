@@ -71,7 +71,7 @@ abstract class Term
         return $this->tone;
     }
 
-    public function setTone(Tone $tone): self
+    public function setTone(?Tone $tone): self
     {
         $this->tone = $tone;
 
@@ -83,7 +83,7 @@ abstract class Term
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -95,7 +95,7 @@ abstract class Term
         return $this->createdBy;
     }
 
-    public function setCreatedBy(Player $player): self
+    public function setCreatedBy(?Player $player): self
     {
         $this->createdBy = $player;
 
