@@ -120,6 +120,12 @@ class PeriodController extends TermController
         $period->setDescription($termParams['description']);
         $period->setTone($termParams['tone']);
         $period->setCreatedBy($termParams['createdBy']);
+
+        $errors = $this->validator->validate($period);
+        if (count($errors) > 0) {
+            return $this->returnErrors($errors, '#term-errors');
+        }
+
         $this->entityManager->flush();
 
         // Regenerate the entire board.

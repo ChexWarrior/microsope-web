@@ -127,6 +127,12 @@ class EventController extends TermController
         $event->setDescription($termParams['description']);
         $event->setTone($termParams['tone']);
         $event->setCreatedBy($termParams['createdBy']);
+
+        $errors = $this->validator->validate($event);
+        if (count($errors) > 0) {
+            return $this->returnErrors($errors, '#term-errors');
+        }
+
         $this->entityManager->flush();
 
         return $this->redirectToRoute('period', [
@@ -160,6 +166,12 @@ class EventController extends TermController
         $newEvent->setTone($termParams['tone']);
         $newEvent->setCreatedBy($termParams['createdBy']);
         $newEvent->setPeriod($period);
+
+        $errors = $this->validator->validate($newEvent);
+        if (count($errors) > 0) {
+            return $this->returnErrors($errors, '#term-errors');
+        }
+
         $this->entityManager->persist($newEvent);
         $this->entityManager->flush();
 

@@ -123,6 +123,12 @@ class SceneController extends TermController
         $newScene->setTone($termParams['tone']);
         $newScene->setCreatedBy($termParams['createdBy']);
         $newScene->setEvent($event);
+
+        $errors = $this->validator->validate($newScene);
+        if (count($errors) > 0) {
+            return $this->returnErrors($errors, '#term-errors');
+        }
+
         $this->entityManager->persist($newScene);
         $this->entityManager->flush();
 
@@ -145,6 +151,12 @@ class SceneController extends TermController
         $scene->setDescription($termParams['description']);
         $scene->setTone($termParams['tone']);
         $scene->setCreatedBy($termParams['createdBy']);
+
+        $errors = $this->validator->validate($scene);
+        if (count($errors) > 0) {
+            return $this->returnErrors($errors, '#term-errors');
+        }
+
         $this->entityManager->flush();
 
         return $this->redirectToRoute('event', [
