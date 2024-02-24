@@ -47,7 +47,7 @@ class PeriodController extends TermController
      */
     #[Route('/period/{id}/edit-form', name: 'edit_form_period', methods: 'GET')]
     public function editForm(Period $period): Response {
-        $lastPlace = $this->periodRepository->findLastPlaceByHistory($period->getHistory());
+        $lastPlace = $this->periodRepository->findLastPlaceByParent($period->getHistory());
         $players = $this->playerRepository->findAllByActiveAndHistory($period->getHistory());
 
         $title = "Edit Period: " . ($period->getPlace() + 1);
@@ -78,7 +78,7 @@ class PeriodController extends TermController
         #[MapQueryParameter(name:"place")] int $defaultPlace = 0
     ): Response {
         try {
-            $lastPlace = $this->periodRepository->findLastPlaceByHistory($history);
+            $lastPlace = $this->periodRepository->findLastPlaceByParent($history);
         } catch (NoResultException $e) {
             $lastPlace = -1;
         }
@@ -141,7 +141,7 @@ class PeriodController extends TermController
         $history = $this->historyRepository->find($termParams['parentId']);
 
         try {
-            $lastPlace = $this->periodRepository->findLastPlaceByHistory($history);
+            $lastPlace = $this->periodRepository->findLastPlaceByParent($history);
         } catch (NoResultException $e) {
             $lastPlace = -1;
         }

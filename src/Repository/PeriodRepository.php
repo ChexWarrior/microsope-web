@@ -41,7 +41,7 @@ class PeriodRepository extends ServiceEntityRepository
         }
     }
 
-    public function findLastPlaceByHistory(History $history): int
+    public function findLastPlaceByParent(History $history): int
     {
         $period = $this->createQueryBuilder('p')
             ->andWhere('p.history = :history')

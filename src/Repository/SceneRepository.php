@@ -87,7 +87,7 @@ class SceneRepository extends ServiceEntityRepository
         return $numScenesByEvent;
     }
 
-    public function findLastPlaceByEvent(Event $event): int
+    public function findLastPlaceByParent(Event $event): int
     {
         $event = $this->createQueryBuilder('s')
             ->andWhere('s.event = :event')

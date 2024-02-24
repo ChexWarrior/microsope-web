@@ -42,12 +42,12 @@ class PeriodRepositoryTest extends IntegrationTestCase
         $this->entityManager->flush();
     }
 
-    public function testFindLastPlaceByHistory(): void {
+    public function testfindLastPlaceByParent(): void {
         $this->findByPlaceDbSetup();
 
         $history = $this->historyRepository->findAll()[0];
 
-        $this->assertEquals(4, $this->periodRepository->findLastPlaceByHistory($history));
+        $this->assertEquals(4, $this->periodRepository->findLastPlaceByParent($history));
     }
 
     public function testFindAllWithPlaceGreaterThanOrEqual(): void {

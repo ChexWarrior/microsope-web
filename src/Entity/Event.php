@@ -66,4 +66,14 @@ class Event extends Term
 
         return $this;
     }
+
+    public function getParent() {
+        return $this->getPeriod();
+    }
+
+    public function setParent($parent) {
+        $this->setPeriod($parent);
+
+        return $this;
+    }
 }

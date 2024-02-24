@@ -41,7 +41,7 @@ class SceneController extends TermController
         #[MapQueryParameter(name:"place")] int $defaultPlace = 0
     ): Response {
         try {
-            $lastPlace = $this->sceneRepository->findLastPlaceByEvent($event);
+            $lastPlace = $this->sceneRepository->findLastPlaceByParent($event);
         } catch (NoResultException $e) {
             $lastPlace = -1;
         }
@@ -74,7 +74,7 @@ class SceneController extends TermController
     public function editForm(Scene $scene): Response {
         $event = $scene->getEvent();
         try {
-            $lastPlace = $this->sceneRepository->findLastPlaceByEvent($event);
+            $lastPlace = $this->sceneRepository->findLastPlaceByParent($event);
         } catch (NoResultException $e) {
             $lastPlace = -1;
         }
@@ -103,7 +103,7 @@ class SceneController extends TermController
         $event = $this->eventRepository->find($termParams['parentId']);
 
         try {
-            $lastPlace = $this->sceneRepository->findLastPlaceByEvent($event);
+            $lastPlace = $this->sceneRepository->findLastPlaceByParent($event);
         } catch (NoResultException $e) {
             $lastPlace = -1;
         }

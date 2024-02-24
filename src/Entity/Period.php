@@ -65,4 +65,14 @@ class Period extends Term
 
         return $this;
     }
+
+    public function getParent() {
+        return $this->getHistory();
+    }
+
+    public function setParent($parent) {
+        $this->setHistory($parent);
+
+        return $this;
+    }
 }
