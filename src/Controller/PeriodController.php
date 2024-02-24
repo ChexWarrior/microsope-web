@@ -47,7 +47,7 @@ class PeriodController extends TermController
      */
     #[Route('/period/{id}/edit-form', name: 'edit_form_period', methods: 'GET')]
     public function editForm(Period $period): Response {
-        $lastPlace = $this->periodRepository->findLastPlaceByHistory($period->getHistory());
+        $lastPlace = $this->periodRepository->findLastPlace($period->getHistory());
         $players = $this->playerRepository->findAllByActiveAndHistory($period->getHistory());
 
         $title = "Edit Period: " . ($period->getPlace() + 1);
@@ -78,7 +78,7 @@ class PeriodController extends TermController
         #[MapQueryParameter(name:"place")] int $defaultPlace = 0
     ): Response {
         try {
-            $lastPlace = $this->periodRepository->findLastPlaceByHistory($history);
+            $lastPlace = $this->periodRepository->findLastPlace($history);
         } catch (NoResultException $e) {
             $lastPlace = -1;
         }
@@ -109,28 +109,24 @@ class PeriodController extends TermController
     #[Route('/period/{id}/edit', name: 'edit_period', methods: 'POST')]
     public function editPeriod(Period $period, Request $request): Response {
         $termParams = $this->parseTermParameters($request);
+        $parentHistory = $period->getHistory();
 
-        // If we change the place of a period we need to swap with the period that exists in that place.
-        if ($period->getPlace() !== $termParams['place']) {
-            $periodToUpdate = $this->periodRepository->findByPlace($termParams['place'], $period->getHistory());
-            $periodToUpdate->setPlace($period->getPlace());
+        try {
+            $editedPeriod = $this->editTerm($period, $termParams, $this->periodRepository, $parentHistory);
+            $errors = $this->validateTerm($editedPeriod);
+        } catch (NoResultException) {
+            $errors = ['place - Must be greater than or equal to 0.'];
         }
 
-        $period->setPlace($termParams['place']);
-        $period->setDescription($termParams['description']);
-        $period->setTone($termParams['tone']);
-        $period->setCreatedBy($termParams['createdBy']);
-
-        $errors = $this->validator->validate($period);
         if (count($errors) > 0) {
-            return $this->returnErrors($errors, '#term-errors');
+            return $this->errorResponse($errors, '#term-errors');
         }
 
         $this->entityManager->flush();
 
         // Regenerate the entire board.
         return $this->redirectToRoute('history_board', [
-                'id' => $period->getHistory()->getId()
+                'id' => $parentHistory->getId(),
             ]
         );
     }
@@ -138,34 +134,17 @@ class PeriodController extends TermController
     #[Route('/period/add', name: 'add_period', methods: 'POST')]
     public function addPeriod(Request $request): Response {
         $termParams = $this->parseTermParameters($request);
-        $history = $this->historyRepository->find($termParams['parentId']);
+        $parentHistory = $this->historyRepository->find($termParams['parentId']);
 
         try {
-            $lastPlace = $this->periodRepository->findLastPlaceByHistory($history);
-        } catch (NoResultException $e) {
-            $lastPlace = -1;
+            $newPeriod = $this->addTerm(new Period(), $termParams, $this->periodRepository, $parentHistory);
+            $errors = $this->validateTerm($newPeriod);
+        } catch (NoResultException) {
+            $errors = ['place - Must be greater than or equal to 0.'];
         }
 
-        // When adding a new card we need to move all periods after it up one in order.
-        if ($termParams['place'] <= $lastPlace) {
-            $periodsToUpdate = $this->periodRepository
-                ->findAllWithPlaceGreaterThanOrEqual($termParams['place'], $history);
-            /** @var Period $p */
-            foreach ($periodsToUpdate as $p) {
-                $p->setPlace($p->getPlace() + 1);
-            }
-        }
-
-        $newPeriod = new Period();
-        $newPeriod->setDescription($termParams['description']);
-        $newPeriod->setPlace($termParams['place']);
-        $newPeriod->setTone($termParams['tone']);
-        $newPeriod->setCreatedBy($termParams['createdBy']);
-        $newPeriod->setHistory($history);
-
-        $errors = $this->validator->validate($newPeriod);
         if (count($errors) > 0) {
-            return $this->returnErrors($errors, '#term-errors');
+            return $this->errorResponse($errors, '#term-errors');
         }
 
         $this->entityManager->persist($newPeriod);
@@ -173,7 +152,7 @@ class PeriodController extends TermController
 
         // Regenerate the entire board.
         return $this->redirectToRoute('history_board', [
-                'id' => $history->getId(),
+                'id' => $parentHistory->getId(),
             ]
         );
     }

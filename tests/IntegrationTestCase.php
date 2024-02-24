@@ -14,7 +14,6 @@ use App\Repository\PlayerRepository;
 use App\Repository\SceneRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 abstract class IntegrationTestCase extends WebTestCase {

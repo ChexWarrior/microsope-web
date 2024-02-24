@@ -66,7 +66,7 @@ abstract class Term
         return $this;
     }
 
-    public function getTone(): Tone
+    public function getTone(): ?Tone
     {
         return $this->tone;
     }
@@ -101,4 +101,8 @@ abstract class Term
 
         return $this;
     }
+
+    abstract public function setParent($parent);
+
+    abstract public function getParent();
 }

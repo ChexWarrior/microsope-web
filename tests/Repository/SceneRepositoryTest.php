@@ -164,8 +164,8 @@ class SceneRepositoryTest extends IntegrationTestCase
         // Assume one period.
         [$event1, $event2] = $history->getPeriods()[0]->getEvents();
 
-        $this->assertEquals(2, $this->sceneRepository->findLastPlaceByEvent($event1));
-        $this->assertEquals(4, $this->sceneRepository->findLastPlaceByEvent($event2));
+        $this->assertEquals(2, $this->sceneRepository->findLastPlace($event1));
+        $this->assertEquals(4, $this->sceneRepository->findLastPlace($event2));
     }
 
     public function testGetByPlace(): void {

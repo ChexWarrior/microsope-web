@@ -143,6 +143,43 @@ class PeriodControllerTest extends IntegrationTestCase
         $this->assertEquals('tone dark', $editedPeriodCard->filter('div.tone')->attr('class'));
     }
 
+        /**
+     * @dataProvider invalidPeriodDataProvider
+     */
+    public function testInvalidEditPeriod(array $editData, array $expectedErrors): void {
+        $this->dbSetup();
+
+        // Assuming one player and period.
+        [$history] = $this->historyRepository->findAll();
+        [$period] = $this->periodRepository->findAll();
+
+        $dataToSend = array_merge(['parent' => $history->getId()], $editData);
+        $crawler = $this->client->request('POST', "/period/{$period->getId()}/edit", $dataToSend);
+
+        $this->assertResponseStatusCodeSame(400);
+        foreach ($expectedErrors as $errorMsg) {
+            $this->assertAnySelectorTextContains('#term-errors', $errorMsg);
+        }
+    }
+
+    /**
+     * @dataProvider invalidPeriodDataProvider
+     */
+    public function testInvalidAddPeriod(array $addData, array $expectedErrors): void {
+        $this->dbSetup();
+
+        // Assuming one player and period.
+        [$history] = $this->historyRepository->findAll();
+
+        $dataToSend = array_merge(['parent' => $history->getId()], $addData);
+        $crawler = $this->client->request('POST', "/period/add", $dataToSend);
+
+        $this->assertResponseStatusCodeSame(400);
+        foreach ($expectedErrors as $errorMsg) {
+            $this->assertAnySelectorTextContains('#term-errors', $errorMsg);
+        }
+    }
+
     public function testGetPeriod(): void {
         $this->dbSetup();
 
@@ -155,5 +192,36 @@ class PeriodControllerTest extends IntegrationTestCase
         $periodCard = $crawler->filter('div.period.card')->last();
         $this->assertEquals('Test Period', $periodCard->filter('p')->text(null, true));
         $this->assertEquals('tone light', $periodCard->filter('div.tone')->attr('class'));
+    }
+
+    public function invalidPeriodDataProvider() {
+        $validPlaceWithBadData = [
+            'description' => '',
+            'tone' => '',
+            'order' => 0,
+            'player' => null,
+        ];
+
+        $validPlaceWithBadDataMsgs = [
+            'description -',
+            'tone -',
+            'createdBy -',
+        ];
+
+        $invalidPlaceData = [
+            'description' => '',
+            'tone' => '',
+            'order' => -1,
+            'player' => null,
+        ];
+
+        $invalidPlaceDataMsgs = [
+            'place -',
+        ];
+
+        return [
+            [$validPlaceWithBadData, $validPlaceWithBadDataMsgs],
+            [$invalidPlaceData, $invalidPlaceDataMsgs],
+        ];
     }
 }

@@ -41,7 +41,7 @@ class SceneController extends TermController
         #[MapQueryParameter(name:"place")] int $defaultPlace = 0
     ): Response {
         try {
-            $lastPlace = $this->sceneRepository->findLastPlaceByEvent($event);
+            $lastPlace = $this->sceneRepository->findLastPlace($event);
         } catch (NoResultException $e) {
             $lastPlace = -1;
         }
@@ -74,7 +74,7 @@ class SceneController extends TermController
     public function editForm(Scene $scene): Response {
         $event = $scene->getEvent();
         try {
-            $lastPlace = $this->sceneRepository->findLastPlaceByEvent($event);
+            $lastPlace = $this->sceneRepository->findLastPlace($event);
         } catch (NoResultException $e) {
             $lastPlace = -1;
         }
@@ -100,40 +100,24 @@ class SceneController extends TermController
     #[Route('/scene/add', name: 'add_scene', methods: 'POST')]
     public function addScene(Request $request): Response {
         $termParams = $this->parseTermParameters($request);
-        $event = $this->eventRepository->find($termParams['parentId']);
+        $parentEvent = $this->eventRepository->find($termParams['parentId']);
 
         try {
-            $lastPlace = $this->sceneRepository->findLastPlaceByEvent($event);
-        } catch (NoResultException $e) {
-            $lastPlace = -1;
+            $newScene = $this->addTerm(new Scene(), $termParams, $this->sceneRepository, $parentEvent);
+            $errors = $this->validateTerm($newScene);
+        } catch (NoResultException) {
+            $errors = ['place - Must be greater than or equal to 0.'];
         }
 
-        if ($termParams['place'] <= $lastPlace) {
-            $scenesToUpdate = $this->sceneRepository
-                ->findAllWithPlaceGreaterThanOrEqual($termParams['place'], $event);
-            /** @var Scene $s */
-            foreach ($scenesToUpdate as $s) {
-                $s->setPlace($s->getPlace() + 1);
-            }
-        }
-
-        $newScene = new Scene();
-        $newScene->setDescription($termParams['description']);
-        $newScene->setPlace($termParams['place']);
-        $newScene->setTone($termParams['tone']);
-        $newScene->setCreatedBy($termParams['createdBy']);
-        $newScene->setEvent($event);
-
-        $errors = $this->validator->validate($newScene);
         if (count($errors) > 0) {
-            return $this->returnErrors($errors, '#term-errors');
+            return $this->errorResponse($errors, '#term-errors');
         }
 
         $this->entityManager->persist($newScene);
         $this->entityManager->flush();
 
         return $this->redirectToRoute('event', [
-            'id' => $event->getId(),
+            'id' => $parentEvent->getId(),
             'showScenes' => true,
         ]);
     }
@@ -141,26 +125,22 @@ class SceneController extends TermController
     #[Route('/scene/{id}/edit', name: 'edit_scene', methods: 'POST')]
     public function editScene(Scene $scene, Request $request): Response {
         $termParams = $this->parseTermParameters($request);
-        $event = $scene->getEvent();
-        if  ($scene->getPlace() !== $termParams['place']) {
-            $sceneToUpdate = $this->sceneRepository->findByPlace($termParams['place'], $event);
-            $sceneToUpdate->setPlace($scene->getPlace());
+        $parentEvent = $scene->getEvent();
+
+        try {
+            $editedScene = $this->editTerm($scene, $termParams, $this->sceneRepository, $parentEvent);
+            $errors = $this->validateTerm($editedScene);
+        } catch (NoResultException) {
+            $errors = ['place - Must be greater than or equal to 0.'];
         }
 
-        $scene->setPlace($termParams['place']);
-        $scene->setDescription($termParams['description']);
-        $scene->setTone($termParams['tone']);
-        $scene->setCreatedBy($termParams['createdBy']);
-
-        $errors = $this->validator->validate($scene);
         if (count($errors) > 0) {
-            return $this->returnErrors($errors, '#term-errors');
+            return $this->errorResponse($errors, '#term-errors');
         }
 
         $this->entityManager->flush();
-
         return $this->redirectToRoute('event', [
-            'id' => $event->getId(),
+            'id' => $parentEvent->getId(),
             'showScenes' => true,
         ]);
     }

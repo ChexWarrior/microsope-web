@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Entity\History;
 use App\Entity\Period;
+use App\Entity\Term;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,7 +17,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Event[]    findAll()
  * @method Event[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class EventRepository extends ServiceEntityRepository
+class EventRepository extends ServiceEntityRepository implements TermRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -40,8 +42,12 @@ class EventRepository extends ServiceEntityRepository
         }
     }
 
-    public function findLastPlaceByPeriod(Period $period): int
+    public function findLastPlace(History|Term $period): int
     {
+        if (!($period instanceof Period)) {
+            throw new \InvalidArgumentException("You must pass a Period parent object to this method!");
+        }
+
         $event = $this->createQueryBuilder('e')
             ->andWhere('e.period = :period')
             ->setParameter('period', $period)
@@ -53,8 +59,12 @@ class EventRepository extends ServiceEntityRepository
         return $event->getPlace();
     }
 
-    public function findAllWithPlaceGreaterThanOrEqual(int $place, Period $period): array
+    public function findAllWithPlaceGreaterThanOrEqual(int $place, History|Term $period): array
     {
+        if (!($period instanceof Period)) {
+            throw new \InvalidArgumentException("You must pass a Period parent object to this method!");
+        }
+
         return $this->createQueryBuilder('e')
             ->andWhere('e.period = :period')
             ->setParameter('period', $period)
@@ -64,8 +74,12 @@ class EventRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByPlace(int $place, Period $period): Event
+    public function findByPlace(int $place, History|Term $period): Event
     {
+        if (!($period instanceof Period)) {
+            throw new \InvalidArgumentException("You must pass a Period parent object to this method!");
+        }
+
         return $this->createQueryBuilder('e')
             ->andWhere('e.period = :period')
             ->setParameter('period', $period)
@@ -74,30 +88,4 @@ class EventRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleResult();
     }
-
-
-//    /**
-//     * @return Event[] Returns an array of Event objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Event
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

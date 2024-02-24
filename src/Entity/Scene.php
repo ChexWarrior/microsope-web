@@ -25,4 +25,14 @@ class Scene extends Term
 
         return $this;
     }
+
+    public function getParent() {
+        return $this->getEvent();
+    }
+
+    public function setParent($parent) {
+        $this->setEvent($parent);
+
+        return $this;
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\History;
 use App\Entity\Period;
+use App\Entity\Term;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,7 +17,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Period[]    findAll()
  * @method Period[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PeriodRepository extends ServiceEntityRepository
+class PeriodRepository extends ServiceEntityRepository implements TermRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -41,8 +42,12 @@ class PeriodRepository extends ServiceEntityRepository
         }
     }
 
-    public function findLastPlaceByHistory(History $history): int
+    public function findLastPlace(History|Term $history): int
     {
+        if (!($history instanceof History)) {
+            throw new \InvalidArgumentException("You must pass a History parent object to this method!");
+        }
+
         $period = $this->createQueryBuilder('p')
             ->andWhere('p.history = :history')
             ->setParameter('history', $history)
@@ -54,8 +59,12 @@ class PeriodRepository extends ServiceEntityRepository
         return $period->getPlace();
     }
 
-    public function findByPlace(int $place, History $history): Period
+    public function findByPlace(int $place, History|Term $history): Period
     {
+        if (!($history instanceof History)) {
+            throw new \InvalidArgumentException("You must pass a History parent object to this method!");
+        }
+
         return $this->createQueryBuilder('p')
             ->andWhere('p.history = :history')
             ->setParameter('history', $history)
@@ -65,8 +74,12 @@ class PeriodRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
-    public function findAllWithPlaceGreaterThanOrEqual(int $place, History $history): array
+    public function findAllWithPlaceGreaterThanOrEqual(int $place, History|Term $history): array
     {
+        if (!($history instanceof History)) {
+            throw new \InvalidArgumentException("You must pass a History parent object to this method!");
+        }
+
         return $this->createQueryBuilder('p')
             ->andWhere('p.history = :history')
             ->setParameter('history', $history)
@@ -75,29 +88,4 @@ class PeriodRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-//    /**
-//     * @return Period[] Returns an array of Period objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Period
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
