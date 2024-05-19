@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\History;
 use App\Entity\Period;
 use App\Entity\Scene;
+use App\Entity\Term;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,7 +18,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Scene[]    findAll()
  * @method Scene[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SceneRepository extends ServiceEntityRepository
+class SceneRepository extends ServiceEntityRepository implements TermRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -87,8 +88,13 @@ class SceneRepository extends ServiceEntityRepository
         return $numScenesByEvent;
     }
 
-    public function findLastPlaceByEvent(Event $event): int
+    public function findLastPlace(History|Term $event): int
     {
+
+        if (!($event instanceof Event)) {
+            throw new \InvalidArgumentException("You must pass a Event parent object to this method!");
+        }
+
         $event = $this->createQueryBuilder('s')
             ->andWhere('s.event = :event')
             ->setParameter('event', $event)
@@ -100,8 +106,13 @@ class SceneRepository extends ServiceEntityRepository
         return $event->getPlace();
     }
 
-    public function findAllWithPlaceGreaterThanOrEqual(int $place, Event $event): array
+    public function findAllWithPlaceGreaterThanOrEqual(int $place, History|Term $event): array
     {
+
+        if (!($event instanceof Event)) {
+            throw new \InvalidArgumentException("You must pass a Event parent object to this method!");
+        }
+
         return $this->createQueryBuilder('s')
             ->andWhere('s.event = :event')
             ->setParameter('event', $event)
@@ -111,8 +122,12 @@ class SceneRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByPlace(int $place, Event $event): Scene
+    public function findByPlace(int $place, History|Term $event): Term
     {
+        if (!($event instanceof Event)) {
+            throw new \InvalidArgumentException("You must pass a Event parent object to this method!");
+        }
+
         return $this->createQueryBuilder('s')
             ->andWhere('s.event = :event')
             ->setParameter('event', $event)
@@ -121,30 +136,4 @@ class SceneRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleResult();
     }
-
-
-//    /**
-//     * @return Scene[] Returns an array of Scene objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Scene
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

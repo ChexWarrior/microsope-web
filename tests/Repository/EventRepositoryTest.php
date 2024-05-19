@@ -68,15 +68,15 @@ class EventRepositoryTest extends IntegrationTestCase
         $this->entityManager->flush();
     }
 
-    public function testFindLastPlaceByPeriod(): void {
+    public function testFindLastPlace(): void {
         $this->findByPlaceDbSetup();
 
         // Assuming one history.
         $history = $this->historyRepository->findAll()[0];
         [$period1, $period2] = $history->getPeriods();
 
-        $this->assertEquals(2, $this->eventRepository->findLastPlaceByPeriod($period1));
-        $this->assertEquals(4, $this->eventRepository->findLastPlaceByPeriod($period2));
+        $this->assertEquals(2, $this->eventRepository->findLastPlace($period1));
+        $this->assertEquals(4, $this->eventRepository->findLastPlace($period2));
     }
 
     public function testFindAllWithPlaceGreaterThanOrEqual(): void {

@@ -144,6 +144,43 @@ class EventControllerTest extends IntegrationTestCase
         $this->assertEquals('tone dark', $editedEventCard->filter('div.tone')->attr('class'));
     }
 
+    /**
+     * @dataProvider invalidEventDataProvider
+     */
+    public function testInvalidEditEvent(array $editData, array $expectedErrors): void {
+        $this->dbSetup();
+
+        // Assuming one player and period.
+        [$period] = $this->periodRepository->findAll();
+        [$event] = $this->eventRepository->findAll();
+
+        $dataToSend = array_merge(['parent' => $period->getId()], $editData);
+        $crawler = $this->client->request('POST', "/event/{$event->getId()}/edit", $dataToSend);
+
+        $this->assertResponseStatusCodeSame(400);
+        foreach ($expectedErrors as $errorMsg) {
+            $this->assertAnySelectorTextContains('#term-errors', $errorMsg);
+        }
+    }
+
+    /**
+     * @dataProvider invalidEventDataProvider
+     */
+    public function testInvalidAddEvent(array $addData, array $expectedErrors): void {
+        $this->dbSetup();
+
+        // Assuming one player and period.
+        [$period] = $this->periodRepository->findAll();
+
+        $dataToSend = array_merge(['parent' => $period->getId()], $addData);
+        $crawler = $this->client->request('POST', "/event/add", $dataToSend);
+
+        $this->assertResponseStatusCodeSame(400);
+        foreach ($expectedErrors as $errorMsg) {
+            $this->assertAnySelectorTextContains('#term-errors', $errorMsg);
+        }
+    }
+
     public function testGetEvent(): void {
         $this->dbSetup();
 
@@ -156,5 +193,36 @@ class EventControllerTest extends IntegrationTestCase
         $eventCard = $crawler->filter('div.event.card')->last();
         $this->assertEquals('Test Event', $eventCard->filter('p')->text(null, true));
         $this->assertEquals('tone light', $eventCard->filter('div.tone')->attr('class'));
+    }
+
+    public function invalidEventDataProvider() {
+        $validPlaceWithBadData = [
+            'description' => '',
+            'tone' => '',
+            'order' => 0,
+            'player' => null,
+        ];
+
+        $validPlaceWithBadDataMsgs = [
+            'description -',
+            'tone -',
+            'createdBy -',
+        ];
+
+        $invalidPlaceData = [
+            'description' => '',
+            'tone' => '',
+            'order' => -1,
+            'player' => null,
+        ];
+
+        $invalidPlaceDataMsgs = [
+            'place -',
+        ];
+
+        return [
+            [$validPlaceWithBadData, $validPlaceWithBadDataMsgs],
+            [$invalidPlaceData, $invalidPlaceDataMsgs],
+        ];
     }
 }

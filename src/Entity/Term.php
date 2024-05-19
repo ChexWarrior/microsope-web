@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Enum\Tone;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\MappedSuperclass;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Holds the common properties among Period, Event and Scene classes.
@@ -20,15 +21,21 @@ abstract class Term
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?Player $createdBy = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
+    #[Assert\PositiveOrZero]
     private ?int $place = null;
 
     #[ORM\Column(length: 255, enumType: Tone::class)]
+    #[Assert\NotNull]
     private ?Tone $tone = null;
 
     #[ORM\Column(length: 1000)]
+    #[Assert\NotNull]
+    #[Assert\Length(min: 1, max: 1000)]
     private ?string $description = null;
 
     public static function build(?string $desc = null, ?Tone $tone = null, ?int $place = null, ?Player $createdBy = null) {
@@ -59,12 +66,12 @@ abstract class Term
         return $this;
     }
 
-    public function getTone(): Tone
+    public function getTone(): ?Tone
     {
         return $this->tone;
     }
 
-    public function setTone(Tone $tone): self
+    public function setTone(?Tone $tone): self
     {
         $this->tone = $tone;
 
@@ -76,7 +83,7 @@ abstract class Term
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -88,10 +95,14 @@ abstract class Term
         return $this->createdBy;
     }
 
-    public function setCreatedBy(Player $player): self
+    public function setCreatedBy(?Player $player): self
     {
         $this->createdBy = $player;
 
         return $this;
     }
+
+    abstract public function setParent($parent);
+
+    abstract public function getParent();
 }

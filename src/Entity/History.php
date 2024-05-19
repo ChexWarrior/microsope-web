@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HistoryRepository::class)]
 class History
@@ -17,6 +18,7 @@ class History
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(min: 0, max: 255)]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
@@ -26,6 +28,7 @@ class History
     private array $included = [];
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(min: 0, max: 255)]
     private ?string $focus = null;
 
     #[ORM\OneToMany(mappedBy: 'history', targetEntity: Period::class, orphanRemoval: true, cascade: ['persist'])]

@@ -46,3 +46,8 @@ h3 {
   flex-wrap: nowrap;
   overflow: scroll;
 }
+
+.error {
+  color: red;
+  font-size: small;
+}

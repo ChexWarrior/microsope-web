@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EventController extends TermController
 {
@@ -21,9 +22,10 @@ class EventController extends TermController
         private PeriodRepository $periodRepository,
         private EventRepository $eventRepository,
         private EntityManagerInterface $entityManager,
-        PlayerRepository $playerRepository
+        PlayerRepository $playerRepository,
+        ValidatorInterface $validator
     ) {
-        parent::__construct($playerRepository);
+        parent::__construct($playerRepository, $validator);
     }
 
     #[Route('/event/{id}', name: 'event', methods: 'GET')]
@@ -46,27 +48,19 @@ class EventController extends TermController
      */
     #[Route('/event/{id}/edit-form', name: 'edit_form_event', methods: 'GET')]
     public function editForm(Event $event): Response {
-        $period = $event->getPeriod();
-        try {
-            $lastPlace = $this->eventRepository->findLastPlaceByPeriod($period);
-        } catch (NoResultException $e) {
-            $lastPlace = -1;
-        }
-
-        $players = $this->playerRepository->findAllByActiveAndHistory($period->getHistory());
-        $title = "Edit Event: " . ($event->getPlace() + 1);
+        $parentPeriod = $event->getPeriod();
         $htmxAttrs = [
             'hx-post' => "/event/{$event->getId()}/edit",
             'hx-swap' => 'outerHTML',
-            'hx-target' => "#period-{$period->getId()}",
+            'hx-target' => "#period-{$parentPeriod->getId()}",
         ];
 
         return $this->render('history/term-form.html.twig', [
-            'title' => $title,
+            'title' => "Edit Event: " . ($event->getPlace() + 1),
             'term' => $event,
-            'lastPlace' => $lastPlace,
-            'players' => $players,
-            'parentId' => $period->getId(),
+            'lastPlace' => $this->getLastPlaceForTerm($parentPeriod, $this->eventRepository),
+            'players' => $this->getAllActivePlayers($parentPeriod->getHistory()),
+            'parentId' => $parentPeriod->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
         ]);
     }
@@ -82,14 +76,6 @@ class EventController extends TermController
         Period $period,
         #[MapQueryParameter(name:"place")] int $defaultPlace = 0
     ): Response {
-        try {
-            $lastPlace = $this->eventRepository->findLastPlaceByPeriod($period);
-        } catch (NoResultException $e) {
-            $lastPlace = -1;
-        }
-
-        $players = $this->playerRepository->findAllByActiveAndHistory($period->getHistory());
-        $title = "Add New Event";
         $term = [
             'description' => '',
             'place' => $defaultPlace,
@@ -103,10 +89,10 @@ class EventController extends TermController
         ];
 
         return $this->render('history/term-form.html.twig', [
-            'title' => $title,
+            'title' => 'Add New Event',
             'term' => $term,
-            'lastPlace' => $lastPlace + 1,
-            'players' => $players,
+            'lastPlace' => $this->getLastPlaceForTerm($period, $this->eventRepository) + 1,
+            'players' => $this->getAllActivePlayers($period->getHistory()),
             'parentId' => $period->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
         ]);
@@ -115,54 +101,46 @@ class EventController extends TermController
     #[Route('/event/{id}/edit', name: 'edit_event', methods: 'POST')]
     public function editEvent(Event $event, Request $request): Response {
         $termParams = $this->parseTermParameters($request);
-        $period = $event->getPeriod();
-        if ($event->getPlace() !== $termParams['place']) {
-            $eventToUpdate = $this->eventRepository->findByPlace($termParams['place'], $period);
-            $eventToUpdate->setPlace($event->getPlace());
+        $parentPeriod = $event->getPeriod();
+
+        try {
+            $editedEvent = $this->editTerm($event, $termParams, $this->eventRepository, $parentPeriod);
+            $errors = $this->validateTerm($editedEvent);
+        } catch(NoResultException) {
+            // We failed to find a term with $termParams['place'].
+            $errors = ['place - Must be greater than or equal to 0.'];
         }
 
-        $event->setPlace($termParams['place']);
-        $event->setDescription($termParams['description']);
-        $event->setTone($termParams['tone']);
-        $event->setCreatedBy($termParams['createdBy']);
-        $this->entityManager->flush();
+        if (count($errors) > 0) {
+            return $this->errorResponse($errors, '#term-errors');
+        }
 
+        $this->entityManager->flush();
         return $this->redirectToRoute('period', [
-            'id' => $period->getId(),
+            'id' => $parentPeriod->getId(),
         ]);
     }
 
     #[Route('/event/add', name: 'add_event', methods: 'POST')]
     public function addEvent(Request $request): Response {
         $termParams = $this->parseTermParameters($request);
-        $period = $this->periodRepository->find($termParams['parentId']);
+        $parentPeriod = $this->periodRepository->find($termParams['parentId']);
 
         try {
-            $lastPlace = $this->eventRepository->findLastPlaceByPeriod($period);
-        } catch (NoResultException $e) {
-            $lastPlace = -1;
+            $newEvent = $this->addTerm(new Event(), $termParams, $this->eventRepository, $parentPeriod);
+            $errors = $this->validateTerm($newEvent);
+        } catch (NoResultException) {
+            $errors = ['place - Must be greater than or equal to 0.'];
         }
 
-        if ($termParams['place'] <= $lastPlace) {
-            $eventsToUpdate = $this->eventRepository
-                ->findAllWithPlaceGreaterThanOrEqual($termParams['place'], $period);
-            /** @var Event $e */
-            foreach ($eventsToUpdate as $e) {
-                $e->setPlace($e->getPlace() + 1);
-            }
+        if (count($errors) > 0) {
+            return $this->errorResponse($errors, '#term-errors');
         }
 
-        $newEvent = new Event();
-        $newEvent->setDescription($termParams['description']);
-        $newEvent->setPlace($termParams['place']);
-        $newEvent->setTone($termParams['tone']);
-        $newEvent->setCreatedBy($termParams['createdBy']);
-        $newEvent->setPeriod($period);
         $this->entityManager->persist($newEvent);
         $this->entityManager->flush();
-
         return $this->redirectToRoute('period', [
-            'id' => $period->getId(),
+            'id' => $parentPeriod->getId(),
         ]);
     }
 }
