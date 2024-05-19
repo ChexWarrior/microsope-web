@@ -47,21 +47,18 @@ class PeriodController extends TermController
      */
     #[Route('/period/{id}/edit-form', name: 'edit_form_period', methods: 'GET')]
     public function editForm(Period $period): Response {
-        $lastPlace = $this->periodRepository->findLastPlace($period->getHistory());
-        $players = $this->playerRepository->findAllByActiveAndHistory($period->getHistory());
-
-        $title = "Edit Period: " . ($period->getPlace() + 1);
+        $parentHistory = $period->getHistory();
         $htmxAttrs = [
             'hx-post' => "/period/{$period->getId()}/edit",
             'hx-target' => '#board',
         ];
 
         return $this->render('history/term-form.html.twig', [
-            'title' => $title,
+            'title' => "Edit Period: " . ($period->getPlace() + 1),
             'term' => $period,
-            'lastPlace' => $lastPlace,
-            'players' => $players,
-            'parentId' => $period->getHistory()->getId(),
+            'lastPlace' => $this->getLastPlaceForTerm($parentHistory, $this->periodRepository),
+            'players' => $this->getAllActivePlayers($parentHistory),
+            'parentId' => $parentHistory->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
         ]);
     }
@@ -77,14 +74,6 @@ class PeriodController extends TermController
         History $history,
         #[MapQueryParameter(name:"place")] int $defaultPlace = 0
     ): Response {
-        try {
-            $lastPlace = $this->periodRepository->findLastPlace($history);
-        } catch (NoResultException $e) {
-            $lastPlace = -1;
-        }
-
-        $players = $this->playerRepository->findAllByActiveAndHistory($history);
-        $title = "Add New Period";
         $term = [
             'description' => '',
             'place' => $defaultPlace,
@@ -97,10 +86,10 @@ class PeriodController extends TermController
         ];
 
         return $this->render('history/term-form.html.twig', [
-            'title' => $title,
+            'title' => 'Add New Period',
             'term' => $term,
-            'lastPlace' => $lastPlace + 1,
-            'players' => $players,
+            'lastPlace' => $this->getLastPlaceForTerm($history, $this->periodRepository) + 1,
+            'players' => $this->getAllActivePlayers($history),
             'parentId' => $history->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
         ]);

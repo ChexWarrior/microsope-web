@@ -7,12 +7,10 @@ use App\Entity\Term;
 use App\Enum\Tone;
 use App\Repository\PlayerRepository;
 use App\Repository\TermRepositoryInterface;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class TermController extends AbstractController
@@ -21,6 +19,18 @@ abstract class TermController extends AbstractController
         protected PlayerRepository $playerRepository,
         protected ValidatorInterface $validator
     ){}
+
+    public function getLastPlaceForTerm(History|Term $parent, TermRepositoryInterface $repo): int {
+        try {
+            return $repo->findLastPlace($parent);
+        } catch (NoResultException) {
+            return -1;
+        }
+    }
+
+    public function getAllActivePlayers(History $history): array {
+        return $this->playerRepository->findAllByActiveAndHistory($history);
+    }
 
     /**
      * Update a term with $editData.

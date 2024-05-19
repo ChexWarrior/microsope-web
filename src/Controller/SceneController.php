@@ -40,14 +40,6 @@ class SceneController extends TermController
         Event $event,
         #[MapQueryParameter(name:"place")] int $defaultPlace = 0
     ): Response {
-        try {
-            $lastPlace = $this->sceneRepository->findLastPlace($event);
-        } catch (NoResultException $e) {
-            $lastPlace = -1;
-        }
-
-        $players = $this->playerRepository->findAllByActiveAndHistory($event->getPeriod()->getHistory());
-        $title = "Add New Scene";
         $term = [
             'description' => '',
             'place' => $defaultPlace,
@@ -61,10 +53,10 @@ class SceneController extends TermController
         ];
 
         return $this->render('history/term-form.html.twig', [
-            'title' => $title,
+            'title' => 'Add New Scene',
             'term' => $term,
-            'lastPlace' => $lastPlace + 1,
-            'players' => $players,
+            'lastPlace' => $this->getLastPlaceForTerm($event, $this->sceneRepository) + 1,
+            'players' => $this->getAllActivePlayers($event->getPeriod()->getHistory()),
             'parentId' => $event->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
         ]);
@@ -72,27 +64,19 @@ class SceneController extends TermController
 
     #[Route('/scene/{id}/edit-form', name: 'edit_form_scene', methods: 'GET')]
     public function editForm(Scene $scene): Response {
-        $event = $scene->getEvent();
-        try {
-            $lastPlace = $this->sceneRepository->findLastPlace($event);
-        } catch (NoResultException $e) {
-            $lastPlace = -1;
-        }
-
-        $players = $this->playerRepository->findAllByActiveAndHistory($event->getPeriod()->getHistory());
-        $title = 'Edit Scene ' . ($scene->getPlace() + 1);
+        $parentEvent = $scene->getEvent();
         $htmxAttrs = [
             'hx-post' => "/scene/{$scene->getId()}/edit",
             'hx-swap' => 'outerHTML',
-            'hx-target' => "#event-{$event->getId()}",
+            'hx-target' => "#event-{$parentEvent->getId()}",
         ];
 
         return $this->render('history/term-form.html.twig', [
-            'title' => $title,
+            'title' => 'Edit Scene ' . ($scene->getPlace() + 1),
             'term' => $scene,
-            'lastPlace' => $lastPlace,
-            'players' => $players,
-            'parentId' => $event->getId(),
+            'lastPlace' => $this->getLastPlaceForTerm($parentEvent, $this->sceneRepository),
+            'players' => $this->getAllActivePlayers($parentEvent->getPeriod()->getHistory()),
+            'parentId' => $parentEvent->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
         ]);
     }

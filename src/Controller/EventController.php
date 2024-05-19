@@ -48,27 +48,19 @@ class EventController extends TermController
      */
     #[Route('/event/{id}/edit-form', name: 'edit_form_event', methods: 'GET')]
     public function editForm(Event $event): Response {
-        $period = $event->getPeriod();
-        try {
-            $lastPlace = $this->eventRepository->findLastPlace($period);
-        } catch (NoResultException $e) {
-            $lastPlace = -1;
-        }
-
-        $players = $this->playerRepository->findAllByActiveAndHistory($period->getHistory());
-        $title = "Edit Event: " . ($event->getPlace() + 1);
+        $parentPeriod = $event->getPeriod();
         $htmxAttrs = [
             'hx-post' => "/event/{$event->getId()}/edit",
             'hx-swap' => 'outerHTML',
-            'hx-target' => "#period-{$period->getId()}",
+            'hx-target' => "#period-{$parentPeriod->getId()}",
         ];
 
         return $this->render('history/term-form.html.twig', [
-            'title' => $title,
+            'title' => "Edit Event: " . ($event->getPlace() + 1),
             'term' => $event,
-            'lastPlace' => $lastPlace,
-            'players' => $players,
-            'parentId' => $period->getId(),
+            'lastPlace' => $this->getLastPlaceForTerm($parentPeriod, $this->eventRepository),
+            'players' => $this->getAllActivePlayers($parentPeriod->getHistory()),
+            'parentId' => $parentPeriod->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
         ]);
     }
@@ -84,14 +76,6 @@ class EventController extends TermController
         Period $period,
         #[MapQueryParameter(name:"place")] int $defaultPlace = 0
     ): Response {
-        try {
-            $lastPlace = $this->eventRepository->findLastPlace($period);
-        } catch (NoResultException $e) {
-            $lastPlace = -1;
-        }
-
-        $players = $this->playerRepository->findAllByActiveAndHistory($period->getHistory());
-        $title = "Add New Event";
         $term = [
             'description' => '',
             'place' => $defaultPlace,
@@ -105,10 +89,10 @@ class EventController extends TermController
         ];
 
         return $this->render('history/term-form.html.twig', [
-            'title' => $title,
+            'title' => 'Add New Event',
             'term' => $term,
-            'lastPlace' => $lastPlace + 1,
-            'players' => $players,
+            'lastPlace' => $this->getLastPlaceForTerm($period, $this->eventRepository) + 1,
+            'players' => $this->getAllActivePlayers($period->getHistory()),
             'parentId' => $period->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
         ]);
