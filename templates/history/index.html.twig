@@ -15,7 +15,7 @@
   <div id="information" class="container">
     <details class="history padded-border align-start">
       <summary>History Information</summary>
-      <div class="container">
+      <div id="history-info-{{ history.id }}" class="container">
         {% include "history/info.html.twig" with { history } %}
       </div>
       <button hx-get="/history/{{history.id}}/edit-form">Edit History</button>

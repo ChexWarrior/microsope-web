@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\History;
 use App\Repository\SceneRepository;
+use App\Service\HtmlFormatter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,5 +42,18 @@ class HistoryController extends AbstractController
         return new Response(
             '<div id="term-dialog" class="backdrop hidden"></div>'
         );
+    }
+
+    #[Route('/history/{id}/edit-form', name: 'edit_form_history', methods: 'GET')]
+    public function editForm(History $history): Response {
+        $htmxAttrs = [
+            'hx-post' => "/history/{$history->getId()}/edit",
+            'hx-target' => "#history-info-{$history->getId()}",
+        ];
+
+        return $this->render('history/info-form.html.twig', [
+            'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
+            'history' => $history,
+        ]);
     }
 }
