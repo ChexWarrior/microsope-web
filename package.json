@@ -12,6 +12,6 @@
   "author": "ChexWarrior",
   "license": "ISC",
   "dependencies": {
-    "htmx.org": "^1.9.10"
+    "htmx.org": "^2.0.2"
   }
 }
