@@ -1,0 +1,25 @@
+{#
+  Renders history information including exclude and include palette.
+
+  Variables:
+  * history - The history entity for this game.
+#}
+
+<div>
+  <span><strong>Seed:</strong> {{ history.description }}</span>
+  {% if history.focus is not empty %}
+  <br><br>
+  <span><strong>Focus:</strong> {{history.focus }}</span>
+  {% endif %}
+</div>
+
+{% if history.excluded is not empty or history.included is not empty %}
+<div>
+  <h3>Palette</h3>
+  <hr>
+  <div class="container">
+    {% include "history/palette.html.twig" with { title: 'Excluded', items: history.excluded } %}
+    {% include "history/palette.html.twig" with { title: 'Included', items: history.included } %}
+  </div>
+</div>
+{% endif %}

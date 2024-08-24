@@ -16,24 +16,7 @@
     <details class="history padded-border align-start">
       <summary>History Information</summary>
       <div class="container">
-        <div>
-          <span><strong>Seed:</strong> {{ history.description }}</span>
-          {% if history.focus is not empty %}
-          <br><br>
-          <span><strong>Focus:</strong> {{history.focus }}</span>
-          {% endif %}
-        </div>
-
-        {% if history.excluded is not empty or history.included is not empty %}
-        <div>
-          <h3>Palette</h3>
-          <hr>
-          <div class="container">
-            {% include "history/palette.html.twig" with { title: 'Excluded', items: history.excluded } %}
-            {% include "history/palette.html.twig" with { title: 'Included', items: history.included } %}
-          </div>
-        </div>
-        {% endif %}
+        {% include "history/info.html.twig" with { history } %}
       </div>
     </details>
     <details class="players padded-border align-start">
