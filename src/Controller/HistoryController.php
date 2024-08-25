@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\History;
+use App\Repository\HistoryRepository;
 use App\Repository\SceneRepository;
 use App\Service\HtmlFormatter;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -13,6 +16,8 @@ class HistoryController extends AbstractController
 {
     public function __construct(
         private SceneRepository $sceneRepository,
+        private HistoryRepository $historyRepository,
+        private EntityManagerInterface $entityManager,
     ){}
 
     #[Route('/history/{id}', name: 'app_history', methods: 'GET')]
@@ -61,6 +66,22 @@ class HistoryController extends AbstractController
 
         return $this->render('history/info-form.html.twig', [
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
+            'history' => $history,
+        ]);
+    }
+
+    #[Route('/history/{id}/edit', name: 'edit_history', methods: 'POST')]
+    public function editHistory(History $history, Request $request): Response {
+        $description = $request->getPayload()->get('description');
+        $focus = $request->getPayload()->get('focus');
+
+        // TODO: Validate
+        $history->setDescription($description);
+        $history->setFocus($focus);
+        $this->entityManager->flush();
+
+        return $this->render('history/info.html.twig', [
+            'hideForm' => true,
             'history' => $history,
         ]);
     }

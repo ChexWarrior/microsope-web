@@ -3,7 +3,12 @@
 
   Variables:
   * history - The history entity for this game.
+  * hideForm - If true will hide the edit/add history dialog. Used to hide dialog after saving info from form.
 #}
+
+{% if hideForm|default(false) %}
+  <div hx-swap-oob="true" id="history-dialog" class="backdrop hidden"></div>
+{% endif %}
 
 <div>
   <span><strong>Seed:</strong> {{ history.description }}</span>
