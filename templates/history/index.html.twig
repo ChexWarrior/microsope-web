@@ -18,7 +18,8 @@
       <div id="history-info-{{ history.id }}" class="container">
         {% include "history/info.html.twig" with { history } %}
       </div>
-      <button hx-get="/history/{{history.id}}/edit-form">Edit History</button>
+      <button hx-target="#history-dialog" hx-swap="outerHTML"
+              hx-get="/history/{{history.id}}/edit-form">Edit History</button>
     </details>
     <details class="players padded-border align-start">
       <summary>Player Information</summary>
@@ -33,4 +34,5 @@
   </div>
   <div class="nav-arrow right">></div>
   <div id="term-dialog" class="backdrop hidden"></div>
+  <div id="history-dialog" class="backdrop hidden"></div>
 {% endblock %}

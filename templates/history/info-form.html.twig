@@ -17,6 +17,10 @@
       <label for="focus">Focus</label>
       <br>
       <input type="text" value="{{ history.focus }}">
+      <br><br>
+      <button value="submit">Submit</button>
+      <button hx-get="/history/info-form/hide" hx-target="#history-dialog" hx-swap="outerHTML"
+              value="cancel">Cancel</button>
     </form>
   </div>
 </div>
