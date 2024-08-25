@@ -12,12 +12,27 @@
     <form method="post" {{ htmx_attrs ? htmx_attrs|raw : ''}}>
       <label for="description">Seed</label>
       <br>
-      <textarea name="description" rows="10">{{ history.description }}</textarea>
+      <textarea name="description" rows="5">{{ history.description }}</textarea>
       <br><br>
       <label for="focus">Focus</label>
       <br>
-      <input type="text" name="focus" value="{{ history.focus }}">
+      <textarea name="focus" rows="5">{{ history.focus }}</textarea>
       <br><br>
+      <label> Palette: Excluded
+      <br>
+      <textarea name="excluded" rows="10">
+        {% for e_item in history.excluded %}
+          {{~ e_item|trim ~}}
+        {% endfor %}
+      </textarea>
+      <br><br>
+      <label> Palette: Included
+      <br>
+      <textarea name="included" rows="10">
+        {% for i_item in history.included %}
+          {{~ i_item|trim ~}}
+        {% endfor %}
+      </textarea>
       <button value="submit">Submit</button>
       <button hx-get="/history/info-form/hide" hx-target="#history-dialog" hx-swap="outerHTML"
               value="cancel">Cancel</button>
