@@ -74,10 +74,17 @@ class HistoryController extends AbstractController
     public function editHistory(History $history, Request $request): Response {
         $description = $request->getPayload()->get('description');
         $focus = $request->getPayload()->get('focus');
+        $includedPalette = $request->getPayload()->get('included');
+        $excludedPalette = $request->getPayload()->get('excluded');
+
+        $includedPalette = explode("\n", $includedPalette);
+        $excludedPalette = explode("\n", $excludedPalette);
 
         // TODO: Validate
         $history->setDescription($description);
         $history->setFocus($focus);
+        $history->setIncluded($includedPalette);
+        $history->setExcluded($excludedPalette);
         $this->entityManager->flush();
 
         return $this->render('history/info.html.twig', [
