@@ -44,6 +44,14 @@ class HistoryController extends AbstractController
         );
     }
 
+    #[Route('/history/info-form/hide', name: 'hide_info_form', methods: 'GET')]
+    public function hideInfoForm(): Response
+    {
+        return new Response(
+            '<div id="history-dialog" class="backdrop hidden"></div>'
+        );
+    }
+
     #[Route('/history/{id}/edit-form', name: 'edit_form_history', methods: 'GET')]
     public function editForm(History $history): Response {
         $htmxAttrs = [
