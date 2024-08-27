@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class HistoryController extends AbstractController
 {
@@ -18,6 +19,7 @@ class HistoryController extends AbstractController
         private SceneRepository $sceneRepository,
         private HistoryRepository $historyRepository,
         private EntityManagerInterface $entityManager,
+        private ValidatorInterface $validator
     ){}
 
     #[Route('/history/{id}', name: 'app_history', methods: 'GET')]
@@ -80,11 +82,25 @@ class HistoryController extends AbstractController
         $includedPalette = explode("\n", $includedPalette);
         $excludedPalette = explode("\n", $excludedPalette);
 
-        // TODO: Validate
         $history->setDescription($description);
         $history->setFocus($focus);
         $history->setIncluded($includedPalette);
         $history->setExcluded($excludedPalette);
+        $errors = [];
+        foreach ($this->validator->validate($history) as $error) {
+            $errors[] = "{$error->getPropertyPath()} - {$error->getMessage()}";
+        }
+
+        if (count($errors) > 0) {
+            return $this->render('common/errors.html.twig', [
+                'errors' => $errors,
+                'error_id' => 'history-errors'
+            ], new Response('', Response::HTTP_BAD_REQUEST, [
+                'HX-Retarget' => '#history-errors',
+                'HX-Reswap' => 'outerHTML',
+            ]));
+        }
+
         $this->entityManager->flush();
 
         return $this->render('history/info.html.twig', [
