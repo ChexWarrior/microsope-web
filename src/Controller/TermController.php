@@ -130,12 +130,11 @@ abstract class TermController extends AbstractController
      * @param string[] $errors - List of errors to return to client.
      * @param string $target - CSS selector to return errors on client.
      */
-    protected function errorResponse(array $errors, string $target): Response {
+    protected function errorResponse(array $errors): Response {
         return $this->render('common/errors.html.twig', [
             'errors' => $errors,
-            'error_id' => 'term-errors'
         ], new Response('', Response::HTTP_BAD_REQUEST, [
-            'HX-Retarget' => $target,
+            'HX-Retarget' => '.form-errors',
             'HX-Reswap' => 'outerHTML',
         ]));
     }

@@ -94,9 +94,8 @@ class HistoryController extends AbstractController
         if (count($errors) > 0) {
             return $this->render('common/errors.html.twig', [
                 'errors' => $errors,
-                'error_id' => 'history-errors'
             ], new Response('', Response::HTTP_BAD_REQUEST, [
-                'HX-Retarget' => '#history-errors',
+                'HX-Retarget' => '.form-errors',
                 'HX-Reswap' => 'outerHTML',
             ]));
         }

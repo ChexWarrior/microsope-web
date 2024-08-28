@@ -158,7 +158,7 @@ class PeriodControllerTest extends IntegrationTestCase
 
         $this->assertResponseStatusCodeSame(400);
         foreach ($expectedErrors as $errorMsg) {
-            $this->assertAnySelectorTextContains('#term-errors', $errorMsg);
+            $this->assertAnySelectorTextContains('.form-errors', $errorMsg);
         }
     }
 
@@ -176,7 +176,7 @@ class PeriodControllerTest extends IntegrationTestCase
 
         $this->assertResponseStatusCodeSame(400);
         foreach ($expectedErrors as $errorMsg) {
-            $this->assertAnySelectorTextContains('#term-errors', $errorMsg);
+            $this->assertAnySelectorTextContains('.form-errors', $errorMsg);
         }
     }
 
