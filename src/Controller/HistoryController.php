@@ -79,8 +79,8 @@ class HistoryController extends AbstractController
         $includedPalette = trim($request->getPayload()->get('included', ''));
         $excludedPalette = trim($request->getPayload()->get('excluded', ''));
 
-        $includedPalette = explode("\n", $includedPalette);
-        $excludedPalette = explode("\n", $excludedPalette);
+        $includedPalette = array_filter(explode("\n", $includedPalette));
+        $excludedPalette = array_filter(explode("\n", $excludedPalette));
 
         $history->setDescription($description);
         $history->setFocus($focus);
