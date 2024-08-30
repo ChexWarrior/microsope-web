@@ -76,8 +76,8 @@ class HistoryController extends AbstractController
     public function editHistory(History $history, Request $request): Response {
         $description = $request->getPayload()->get('description');
         $focus = $request->getPayload()->get('focus');
-        $includedPalette = $request->getPayload()->get('included');
-        $excludedPalette = $request->getPayload()->get('excluded');
+        $includedPalette = trim($request->getPayload()->get('included', ''));
+        $excludedPalette = trim($request->getPayload()->get('excluded', ''));
 
         $includedPalette = explode("\n", $includedPalette);
         $excludedPalette = explode("\n", $excludedPalette);
