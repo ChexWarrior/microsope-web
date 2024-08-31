@@ -9,6 +9,11 @@ use App\Entity\Player;
 use App\Entity\Scene;
 use App\Enum\Tone;
 use App\Tests\IntegrationTestCase;
+use Symfony\Component\BrowserKit\Exception\LogicException;
+use RuntimeException;
+use DOMException;
+use Symfony\Component\BrowserKit\Exception\BadMethodCallException;
+use LogicException as GlobalLogicException;
 
 class HistoryControllerTest extends IntegrationTestCase
 {
@@ -74,5 +79,35 @@ class HistoryControllerTest extends IntegrationTestCase
         $crawler = $this->client->request('GET', "/history/{$history->getId()}/board");
 
         $this->assertSelectorExists("#period-{$period->getId()}");
+    }
+
+    /**
+     * @dataProvider invalidHistoryDataProvider
+     */
+    public function testEditHistoryInfo(array $editData, array $expectedErrors): void {
+        $this->dbSetup();
+        [$history] = $this->historyRepository->findAll();
+        $crawler = $this->client->request('POST', "/history/{$history->getId()}/edit", $editData);
+
+        $this->assertResponseStatusCodeSame(400);
+        foreach ($expectedErrors as $error) {
+            $this->assertAnySelectorTextContains('.form-errors', $error);
+        }
+    }
+
+    public function invalidHistoryDataProvider() {
+        $invalidDescription = [
+            'description' => str_pad("HISTORY", 300, "HISTORY"),
+            'included' => '',
+            'excluded' => '',
+            'focus' => '',
+        ];
+        $overMaxDescExpectedErrors = [
+            'description -',
+        ];
+
+        return [
+            [$invalidDescription, $overMaxDescExpectedErrors],
+        ];
     }
 }

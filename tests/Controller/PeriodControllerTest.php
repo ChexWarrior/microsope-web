@@ -143,7 +143,7 @@ class PeriodControllerTest extends IntegrationTestCase
         $this->assertEquals('tone dark', $editedPeriodCard->filter('div.tone')->attr('class'));
     }
 
-        /**
+    /**
      * @dataProvider invalidPeriodDataProvider
      */
     public function testInvalidEditPeriod(array $editData, array $expectedErrors): void {
