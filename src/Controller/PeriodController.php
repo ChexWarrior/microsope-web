@@ -108,7 +108,7 @@ class PeriodController extends TermController
         }
 
         if (count($errors) > 0) {
-            return $this->errorResponse($errors, '#term-errors');
+            return $this->errorResponse($errors);
         }
 
         $this->entityManager->flush();
@@ -133,7 +133,7 @@ class PeriodController extends TermController
         }
 
         if (count($errors) > 0) {
-            return $this->errorResponse($errors, '#term-errors');
+            return $this->errorResponse($errors);
         }
 
         $this->entityManager->persist($newPeriod);

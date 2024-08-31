@@ -1,8 +1,10 @@
-<div class="error" id="term-errors">
-  Some errors occurred!
-  <br>
-  {% for error in errors %}
-    {{ error }}
+<div class="form-errors">
+  <div class="error">
+    Some errors occurred!
     <br>
-  {% endfor %}
+    {% for error in errors %}
+      {{ error }}
+      <br>
+    {% endfor %}
+  </div>
 </div>

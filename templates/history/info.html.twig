@@ -1,0 +1,30 @@
+{#
+  Renders history information including exclude and include palette.
+
+  Variables:
+  * history - The history entity for this game.
+  * hideForm - If true will hide the edit/add history dialog. Used to hide dialog after saving info from form.
+#}
+
+{% if hideForm|default(false) %}
+  <div hx-swap-oob="true" id="history-dialog" class="backdrop hidden"></div>
+{% endif %}
+
+<div>
+  <span><strong>Seed:</strong> {{ history.description }}</span>
+  {% if history.focus is not empty %}
+  <br><br>
+  <span><strong>Focus:</strong> {{history.focus }}</span>
+  {% endif %}
+</div>
+
+{% if history.excluded is not empty or history.included is not empty %}
+<div>
+  <h3>Palette</h3>
+  <hr>
+  <div class="container">
+    {% include "history/palette.html.twig" with { title: 'Excluded', items: history.excluded } %}
+    {% include "history/palette.html.twig" with { title: 'Included', items: history.included } %}
+  </div>
+</div>
+{% endif %}

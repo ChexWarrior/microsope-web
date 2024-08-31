@@ -1,0 +1,37 @@
+{#
+  Renders a dialog to edit history information
+
+  Variables:
+  * history - The history being edited.
+#}
+
+<div id="history-dialog" class="backdrop">
+  <div class="edit-history dialog">
+    <strong>Edit History Information</strong>
+    <div class="form-errors hidden"></div>
+    <form method="post" {{ htmx_attrs ? htmx_attrs|raw : ''}}>
+      <label for="description">Seed</label>
+      <br>
+      <textarea name="description" rows="5">{{ history.description }}</textarea>
+      <br><br>
+      <label for="focus">Focus</label>
+      <br>
+      <textarea name="focus" rows="5">{{ history.focus }}</textarea>
+      <br><br>
+      <label> Palette: Excluded
+      <br>
+      <textarea name="excluded" rows="10">
+        {%- include "common/textarea-list.html.twig" with { items: history.excluded } -%}
+      </textarea>
+      <br><br>
+      <label> Palette: Included
+      <br>
+      <textarea name="included" rows="10">
+        {%- include "common/textarea-list.html.twig" with { items: history.included } -%}
+      </textarea>
+      <button value="submit">Submit</button>
+      <button hx-get="/history/info-form/hide" hx-target="#history-dialog" hx-swap="outerHTML"
+              value="cancel">Cancel</button>
+    </form>
+  </div>
+</div>
