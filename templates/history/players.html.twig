@@ -12,6 +12,10 @@
       {{ player.name }}
       {% if player.lens %}🔍{% endif %}
     </h3>
+    <button hx-target="#player-dialog" hx-swap="outerHTML"
+            hx-get="/player/{{ player.id }}/edit-form">
+      Edit
+    </button>
     {% if player.legacy and player.active %}
       <ul>
         <li>{{ player.legacy }}</li>

@@ -23,7 +23,7 @@
     </details>
     <details class="players padded-border align-start">
       <summary>Player Information</summary>
-      <div class="container">
+      <div id="player-info" class="container">
       {% include "history/players.html.twig" with { players: history.players } %}
       </div>
     </details>
@@ -35,4 +35,5 @@
   <div class="nav-arrow right">></div>
   <div id="term-dialog" class="backdrop hidden"></div>
   <div id="history-dialog" class="backdrop hidden"></div>
+  <div id="player-dialog" class="backdrop hidden"></div>
 {% endblock %}
