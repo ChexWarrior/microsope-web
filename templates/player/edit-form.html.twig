@@ -1,0 +1,32 @@
+{#
+  Renders a dialog to edit player information
+
+  Variables:
+  * player - The player being edited.
+#}
+
+<div id="player-dialog" class="backdrop">
+  <div class="edit-player dialog">
+    <strong>Edit Player {{player.name}}</strong>
+    <div class="form-errors hidden"></div>
+    <form method="post" {{ htmx_attrs ? htmx_attrs|raw : ''}}>
+      <label for="name">Name</label>
+      <br>
+      <input type="text" name="name" value="{{ player.name }}" />
+      <br><br>
+      <label for="legacy">Legacy</label>
+      <br>
+      <textarea name="legacy" rows="3">{{player.legacy}}</textarea>
+      <br><br>
+      <label for="lens">Current Lens</label>
+      <input type="checkbox" name="lens" {% if player.lens %}checked{% endif %} />
+      <br><br>
+      <label for="active">Active</label>
+      <input type="checkbox" name="active" {% if player.active %}checked{% endif %} />
+      <br><br>
+      <button value="submit">Submit</button>
+      <button hx-get="/player/edit-form/hide" hx-target="#player-dialog" hx-swap="outerHTML"
+              value="cancel">Cancel</button>
+    </form>
+  </div>
+</div>
