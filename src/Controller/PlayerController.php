@@ -42,9 +42,19 @@ class PlayerController extends AbstractController
         $legacy = $request->getPayload()->get('legacy');
         $isLens = (bool) $request->getPayload()->get('lens', false);
         $isActive = (bool) $request->getPayload()->get('active', false);
+        $history = $player->getHistory();
 
         $player->setName($name);
         $player->setLegacy($legacy);
+
+        // If player is set as lens ensure other players are unset.
+        if ($isLens) {
+            $players = $this->playerRepository->findAllByActiveAndHistory($history);
+            foreach ($players as $p) {
+                $p->setLens(false);
+            }
+        }
+
         $player->setLens($isLens);
         $player->setActive($isActive);
 
@@ -64,7 +74,7 @@ class PlayerController extends AbstractController
 
         $this->entityManager->flush();
         return $this->redirectToRoute('app_history', [
-                'id' => $player->getHistory()->getId(),
+                'id' => $history->getId(),
             ]
         );
     }
