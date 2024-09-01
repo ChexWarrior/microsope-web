@@ -25,7 +25,7 @@
       <input type="checkbox" name="active" {% if player.active %}checked{% endif %} />
       <br><br>
       <button value="submit">Submit</button>
-      <button hx-get="/player/edit-form/hide" hx-target="#player-dialog" hx-swap="outerHTML"
+      <button hx-get="/player/form/hide" hx-target="#player-dialog" hx-swap="outerHTML"
               value="cancel">Cancel</button>
     </form>
   </div>

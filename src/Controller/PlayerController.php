@@ -29,4 +29,13 @@ class PlayerController extends AbstractController
             'player' => $player,
         ]);
     }
+
+
+    #[Route('/player/form/hide', name: 'hide_player_form', methods: 'GET')]
+    public function hideInfoForm(): Response
+    {
+        return new Response(
+            '<div id="player-dialog" class="backdrop hidden"></div>'
+        );
+    }
 }
