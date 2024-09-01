@@ -50,7 +50,7 @@ class PlayerController extends AbstractController
 
         $errors = [];
         foreach ($this->validator->validate($player) as $error) {
-            $errors = "{$error->getPropertyPath()} - {$error->getMessage()}";
+            $errors[] = "{$error->getPropertyPath()} - {$error->getMessage()}";
         }
 
         if (count($errors) > 0) {
