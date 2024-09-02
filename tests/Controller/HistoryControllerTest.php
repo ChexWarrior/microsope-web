@@ -9,11 +9,6 @@ use App\Entity\Player;
 use App\Entity\Scene;
 use App\Enum\Tone;
 use App\Tests\IntegrationTestCase;
-use Symfony\Component\BrowserKit\Exception\LogicException;
-use RuntimeException;
-use DOMException;
-use Symfony\Component\BrowserKit\Exception\BadMethodCallException;
-use LogicException as GlobalLogicException;
 
 class HistoryControllerTest extends IntegrationTestCase
 {
