@@ -90,4 +90,51 @@ class PlayerControllerTest extends IntegrationTestCase
         $this->assertFalse($player2->isLens());
         $this->assertTrue($player1->isLens());
     }
+
+
+    public function testValidPlayerUpdate() {
+        $this->dbSetup();
+        [$history] = $this->historyRepository->findAll();
+        $players = $this->playerRepository->findAllByHistory($history);
+        [$player1] = array_values(array_filter($players, fn($p) => $p->getName() == "Player 1"));
+        $editData = [
+            'name' => 'Player Alpha',
+            'legacy' => 'Test Legacy',
+            'active' => 'true',
+        ];
+
+        // Update player 1.
+        $this->client->request('POST', "/player/{$player1->getId()}/edit", $editData);
+        $this->assertResponseRedirects("/history/{$history->getId()}");
+
+        $players = $this->playerRepository->findAllByHistory($history);
+        [$player1] = array_values(array_filter($players, fn($p) => $p->getId() == 1));
+
+        $this->assertEquals('Player Alpha', $player1->getName());
+        $this->assertEquals('Test Legacy', $player1->getLegacy());
+        $this->assertTrue($player1->isActive());
+        $this->assertFalse($player1->isLens());
+    }
+
+    public function testInvalidPlayerUpdate() {
+        $this->dbSetup();
+        [$history] = $this->historyRepository->findAll();
+        $players = $this->playerRepository->findAllByHistory($history);
+        [$player1] = array_values(array_filter($players, fn($p) => $p->getName() == "Player 1"));
+        $invalidData = [
+            'name' => '',
+            'legacy' => 'Test Legacy',
+            'active' => 'true',
+        ];
+        $expectedErrors = [
+            'name -',
+        ];
+
+        // Update player 1.
+        $this->client->request('POST', "/player/{$player1->getId()}/edit", $invalidData);
+        $this->assertResponseStatusCodeSame(400);
+        foreach ($expectedErrors as $error) {
+            $this->assertAnySelectorTextContains('.form-errors', $error);
+        }
+    }
 }

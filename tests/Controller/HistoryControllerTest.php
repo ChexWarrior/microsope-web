@@ -79,10 +79,10 @@ class HistoryControllerTest extends IntegrationTestCase
     /**
      * @dataProvider invalidHistoryDataProvider
      */
-    public function testEditHistoryInfo(array $editData, array $expectedErrors): void {
+    public function testInvalidHistoryEdit(array $editData, array $expectedErrors): void {
         $this->dbSetup();
         [$history] = $this->historyRepository->findAll();
-        $crawler = $this->client->request('POST', "/history/{$history->getId()}/edit", $editData);
+        $this->client->request('POST', "/history/{$history->getId()}/edit", $editData);
 
         $this->assertResponseStatusCodeSame(400);
         foreach ($expectedErrors as $error) {
