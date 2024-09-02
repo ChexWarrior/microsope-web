@@ -8,7 +8,14 @@
 <ul class="players-list">
 {% for player in players %}
   <li>
-    <h3 {% if not player.active %} class="inactive" {% endif %}>{{ player.name }}</h3>
+    <h3 {% if not player.active %} class="inactive" {% endif %}>
+      {{ player.name }}
+      {% if player.lens %}🔍{% endif %}
+    </h3>
+    <button class="invisible" hx-target="#player-dialog" hx-swap="outerHTML"
+            hx-get="/player/{{ player.id }}/edit-form">
+      Edit
+    </button>
     {% if player.legacy and player.active %}
       <ul>
         <li>{{ player.legacy }}</li>

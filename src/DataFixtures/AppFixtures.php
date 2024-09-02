@@ -38,6 +38,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
         }
 
         $players[$numPlayers - 1]->setActive(false);
+        $players[$numPlayers - 2]->setLens(true);
 
         // Generate history.
         $history = History::build(

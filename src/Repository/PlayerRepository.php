@@ -49,6 +49,16 @@ class PlayerRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAllByHistory(History $history): array {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.history = :history')
+            ->setParameter('history', $history)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
 //    /**
 //     * @return Player[] Returns an array of Player objects
 //     */
