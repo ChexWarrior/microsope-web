@@ -145,6 +145,22 @@ class SceneControllerTest extends IntegrationTestCase
         $this->assertEquals('tone dark', $newSceneCard->filter('div.tone')->attr('class'));
     }
 
+    public function testDeleteScene(): void {
+        $this->dbSetup();
+
+        [$event] = $this->eventRepository->findAll();
+        [$scene] = $this->sceneRepository->findAll();
+
+        $this->client->request('DELETE', "/scene/{$scene->getId()}/delete");
+
+        $this->assertResponseRedirects("/event/{$event->getId()}?showScenes=1");
+        $this->client->followRedirect();
+
+        $this->assertSelectorExists("#event-{$event->getId()}");
+        $this->assertSelectorNotExists('div.scene.card');
+        $this->assertCount(0, $this->sceneRepository->findAll());
+    }
+
     public function testEditScene(): void {
         $this->dbSetup();
 
