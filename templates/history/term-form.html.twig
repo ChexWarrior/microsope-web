@@ -8,6 +8,7 @@
   * players - The active players for this history.
   * lastPlace - The largest place for the term in question.
   * parentId - The id of the parent for this term.
+  * htmx_delete - The HTMX attributes for deleting a term.
 #}
 
 <div id="term-dialog" class="backdrop">
@@ -48,7 +49,9 @@
       <br><br>
       <button value="submit">Submit</button>
       <button hx-get="/history/form/hide" hx-target="#term-dialog" hx-swap="outerHTML" value="cancel">Cancel</button>
-      <button class="delete" {{ htmx_delete ? htmx_delete|raw : '' }}>Delete</button>
+      {% if htmx_delete|default('') is not empty %}
+        <button class="delete" {{ htmx_delete|raw }}>Delete</button>
+      {% endif %}
     </form>
   </div>
 </div>

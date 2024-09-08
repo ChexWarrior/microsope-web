@@ -74,6 +74,7 @@ class SceneController extends TermController
             'hx-delete' => "/scene/{$scene->getId()}/delete",
             'hx-swap' => 'outerHTML',
             'hx-target' => "#event-{$parentEvent->getId()}",
+            'hx-confirm' => "Are you sure you want to delete this Scene?",
         ];
 
         return $this->render('history/term-form.html.twig', [
@@ -113,7 +114,7 @@ class SceneController extends TermController
     }
 
     #[Route('/scene/{id}/delete', name: 'delete_scene', methods: 'DELETE')]
-    public function deleteScene(Scene $scene, Request $request): Response {
+    public function deleteScene(Scene $scene): Response {
         $parent = $scene->getParent();
         $this->deleteTerm($scene, $parent, $this->sceneRepository, $this->entityManager);
         $this->entityManager->flush();
