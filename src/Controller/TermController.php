@@ -7,6 +7,7 @@ use App\Entity\Term;
 use App\Enum\Tone;
 use App\Repository\PlayerRepository;
 use App\Repository\TermRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,6 +90,21 @@ abstract class TermController extends AbstractController
         $newTerm->setParent($parent);
 
         return $newTerm;
+    }
+
+    protected function deleteTerm(
+        Term $targetTerm,
+        History|Term $parent,
+        TermRepositoryInterface $repo,
+        EntityManagerInterface $entityManager
+    ): void {
+        // Update the terms after deleted by -1 to their place.
+        $terms = $repo->findAllWithPlaceGreaterThanOrEqual($targetTerm->getPlace() + 1, $parent);
+        foreach ($terms as $term) {
+            $term->setPlace($term->getPlace() - 1);
+        }
+
+        $entityManager->remove($targetTerm);
     }
 
     /**

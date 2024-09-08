@@ -143,6 +143,22 @@ class PeriodControllerTest extends IntegrationTestCase
         $this->assertEquals('tone dark', $editedPeriodCard->filter('div.tone')->attr('class'));
     }
 
+    public function testDeletePeriod(): void {
+        $this->dbSetup();
+
+        [$history] = $this->historyRepository->findAll();
+        [$period] = $this->periodRepository->findAll();
+
+        $this->client->request('DELETE', "/period/{$period->getId()}/delete");
+
+        $this->assertResponseRedirects("/history/{$history->getId()}/board");
+        $this->client->followRedirect();
+
+        $this->assertSelectorNotExists("#period-{$history->getId()}");
+        $this->assertCount(0, $this->periodRepository->findAll());
+    }
+
+
     /**
      * @dataProvider invalidPeriodDataProvider
      */

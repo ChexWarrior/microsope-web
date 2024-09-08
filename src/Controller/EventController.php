@@ -54,6 +54,12 @@ class EventController extends TermController
             'hx-swap' => 'outerHTML',
             'hx-target' => "#period-{$parentPeriod->getId()}",
         ];
+        $htmxDelete = [
+            'hx-delete' => "/event/{$event->getId()}/delete",
+            'hx-swap' => 'outerHTML',
+            'hx-target' => "#period-{$parentPeriod->getId()}",
+            'hx-confirm' => "Are you sure you want to delete this Event? All children Scenes will also be deleted.",
+        ];
 
         return $this->render('history/term-form.html.twig', [
             'title' => "Edit Event: " . ($event->getPlace() + 1),
@@ -62,6 +68,7 @@ class EventController extends TermController
             'players' => $this->getAllActivePlayers($parentPeriod->getHistory()),
             'parentId' => $parentPeriod->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
+            'htmx_delete' => HtmlFormatter::formatAsAttributes($htmxDelete),
         ]);
     }
 
@@ -119,6 +126,17 @@ class EventController extends TermController
         return $this->redirectToRoute('period', [
             'id' => $parentPeriod->getId(),
         ]);
+    }
+
+    #[Route('/event/{id}/delete', name: 'delete_event', methods: 'DELETE')]
+    public function deleteEvent(Event $event): Response {
+        $parent = $event->getParent();
+        $this->deleteTerm($event, $parent, $this->eventRepository, $this->entityManager);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('period', [
+            'id' => $parent->getId(),
+        ], 303);
     }
 
     #[Route('/event/add', name: 'add_event', methods: 'POST')]

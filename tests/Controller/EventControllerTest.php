@@ -116,6 +116,23 @@ class EventControllerTest extends IntegrationTestCase
         $this->assertEquals('tone dark', $newEventCard->filter('div.tone')->attr('class'));
     }
 
+    public function testDeleteEvent(): void {
+        $this->dbSetup();
+
+        // Assuming one player and period.
+        [$period] = $this->periodRepository->findAll();
+        [$event] = $this->eventRepository->findAll();
+
+        $this->client->request('DELETE', "/event/{$event->getId()}/delete");
+
+        $this->assertResponseRedirects("/period/{$period->getId()}");
+        $this->client->followRedirect();
+
+        $this->assertSelectorExists("#period-{$period->getId()}");
+        $this->assertSelectorNotExists('div.event.card');
+        $this->assertCount(0, $this->eventRepository->findAll());
+    }
+
     public function testEditEvent(): void {
         $this->dbSetup();
 

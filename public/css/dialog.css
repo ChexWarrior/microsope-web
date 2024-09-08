@@ -26,3 +26,7 @@
   resize: none;
   width: 95%;
 }
+
+.delete {
+  float: right;
+}

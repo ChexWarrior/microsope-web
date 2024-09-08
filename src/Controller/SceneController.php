@@ -70,6 +70,12 @@ class SceneController extends TermController
             'hx-swap' => 'outerHTML',
             'hx-target' => "#event-{$parentEvent->getId()}",
         ];
+        $htmxDelete = [
+            'hx-delete' => "/scene/{$scene->getId()}/delete",
+            'hx-swap' => 'outerHTML',
+            'hx-target' => "#event-{$parentEvent->getId()}",
+            'hx-confirm' => "Are you sure you want to delete this Scene?",
+        ];
 
         return $this->render('history/term-form.html.twig', [
             'title' => 'Edit Scene ' . ($scene->getPlace() + 1),
@@ -78,6 +84,7 @@ class SceneController extends TermController
             'players' => $this->getAllActivePlayers($parentEvent->getPeriod()->getHistory()),
             'parentId' => $parentEvent->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
+            'htmx_delete' => HtmlFormatter::formatAsAttributes($htmxDelete),
         ]);
     }
 
@@ -104,6 +111,18 @@ class SceneController extends TermController
             'id' => $parentEvent->getId(),
             'showScenes' => true,
         ]);
+    }
+
+    #[Route('/scene/{id}/delete', name: 'delete_scene', methods: 'DELETE')]
+    public function deleteScene(Scene $scene): Response {
+        $parent = $scene->getParent();
+        $this->deleteTerm($scene, $parent, $this->sceneRepository, $this->entityManager);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('event', [
+            'id' => $parent->getId(),
+            'showScenes' => true,
+        ], 303);
     }
 
     #[Route('/scene/{id}/edit', name: 'edit_scene', methods: 'POST')]
