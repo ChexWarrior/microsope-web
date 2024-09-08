@@ -52,6 +52,11 @@ class PeriodController extends TermController
             'hx-post' => "/period/{$period->getId()}/edit",
             'hx-target' => '#board',
         ];
+        $htmxDelete = [
+            'hx-delete' => "/period/{$period->getId()}/delete",
+            'hx-target' => "#board",
+            'hx-confirm' => "Are you sure you want to delete this Period? All children Events and Scenes will also be deleted.",
+        ];
 
         return $this->render('history/term-form.html.twig', [
             'title' => "Edit Period: " . ($period->getPlace() + 1),
@@ -60,6 +65,7 @@ class PeriodController extends TermController
             'players' => $this->getAllActivePlayers($parentHistory),
             'parentId' => $parentHistory->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
+            'htmx_delete' => HtmlFormatter::formatAsAttributes($htmxDelete),
         ]);
     }
 
@@ -118,6 +124,17 @@ class PeriodController extends TermController
                 'id' => $parentHistory->getId(),
             ]
         );
+    }
+
+    #[Route('/period/{id}/delete', name: 'delete_period', methods: 'DELETE')]
+    public function deletePeriod(Period $period): Response {
+        $history = $period->getParent();
+        $this->deleteTerm($period, $history, $this->periodRepository, $this->entityManager);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('history_board', [
+            'id' => $history->getId(),
+        ], 303);
     }
 
     #[Route('/period/add', name: 'add_period', methods: 'POST')]
