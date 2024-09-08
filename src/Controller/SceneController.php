@@ -106,6 +106,18 @@ class SceneController extends TermController
         ]);
     }
 
+    #[Route('/scene/{id}/delete', name: 'delete_scene', methods: 'DELETE')]
+    public function deleteScene(Scene $scene, Request $request): Response {
+        $parent = $scene->getParent();
+        $this->deleteTerm($scene, $parent, $this->sceneRepository, $this->entityManager);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('event', [
+            'id' => $parent->getId(),
+            'showScenes' => true,
+        ]);
+    }
+
     #[Route('/scene/{id}/edit', name: 'edit_scene', methods: 'POST')]
     public function editScene(Scene $scene, Request $request): Response {
         $termParams = $this->parseTermParameters($request);
