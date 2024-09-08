@@ -48,7 +48,7 @@
       <br><br>
       <button value="submit">Submit</button>
       <button hx-get="/history/form/hide" hx-target="#term-dialog" hx-swap="outerHTML" value="cancel">Cancel</button>
-      <button class="delete" hx-delete="">Delete</button>
+      <button class="delete" {{ htmx_delete ? htmx_delete|raw : '' }}>Delete</button>
     </form>
   </div>
 </div>

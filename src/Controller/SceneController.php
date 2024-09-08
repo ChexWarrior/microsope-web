@@ -70,6 +70,11 @@ class SceneController extends TermController
             'hx-swap' => 'outerHTML',
             'hx-target' => "#event-{$parentEvent->getId()}",
         ];
+        $htmxDelete = [
+            'hx-delete' => "/scene/{$scene->getId()}/delete",
+            'hx-swap' => 'outerHTML',
+            'hx-target' => "#event-{$parentEvent->getId()}",
+        ];
 
         return $this->render('history/term-form.html.twig', [
             'title' => 'Edit Scene ' . ($scene->getPlace() + 1),
@@ -78,6 +83,7 @@ class SceneController extends TermController
             'players' => $this->getAllActivePlayers($parentEvent->getPeriod()->getHistory()),
             'parentId' => $parentEvent->getId(),
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
+            'htmx_delete' => HtmlFormatter::formatAsAttributes($htmxDelete),
         ]);
     }
 
@@ -115,7 +121,7 @@ class SceneController extends TermController
         return $this->redirectToRoute('event', [
             'id' => $parent->getId(),
             'showScenes' => true,
-        ]);
+        ], 303);
     }
 
     #[Route('/scene/{id}/edit', name: 'edit_scene', methods: 'POST')]
