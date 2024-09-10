@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Player;
+use App\Repository\HistoryRepository;
 use App\Repository\PlayerRepository;
 use App\Service\HtmlFormatter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,6 +17,7 @@ class PlayerController extends AbstractController
 {
     public function __construct(
         private PlayerRepository $playerRepository,
+        private HistoryRepository $historyRepository,
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator,
     ){}
@@ -62,7 +64,47 @@ class PlayerController extends AbstractController
     #[Route('/player/add', name: 'add_player', methods: 'POST')]
     public function add(Request $request): Response
     {
+        $name = $request->getPayload()->get('name');
+        $legacy = $request->getPayload()->get('legacy');
+        $isLens = (bool) $request->getPayload()->get('lens', false);
+        $isActive = (bool) $request->getPayload()->get('active', false);
+        $history_id = $request->getPayload()->get('history');
 
+        // FIXME: Return an error like below.
+        $history = $this->historyRepository->findOneBy(['id' => $history_id]);
+        if (empty($history)) {
+            throw new \InvalidArgumentException("Unable to find valid history!");
+        }
+
+        $newPlayer = new Player($name, $history, $isActive, $legacy, $isLens);
+        $errors = [];
+        foreach ($this->validator->validate($newPlayer) as $error) {
+            $errors[] = "{$error->getPropertyPath()} - {$error->getMessage()}";
+        }
+
+        if (count($errors) > 0) {
+            return $this->render('common/errors.html.twig', [
+                'errors' => $errors,
+            ], new Response('', Response::HTTP_BAD_REQUEST, [
+                'HX-Retarget' => '.form-errors',
+                'HX-Reswap' => 'outerHTML',
+            ]));
+        }
+
+        // If player is set as lens ensure other players are unset.
+        if ($isLens) {
+            $players = $this->playerRepository->findAllByActiveAndHistory($history);
+            foreach ($players as $p) {
+                $p->setLens(false);
+            }
+        }
+
+        $this->entityManager->persist($newPlayer);
+        $this->entityManager->flush();
+
+        return $this->render('history/player.html.twig', [
+            'player' => $newPlayer,
+        ]);
     }
 
     #[Route('/player/{id}/edit', name: 'edit_player', methods: 'POST')]
@@ -76,15 +118,6 @@ class PlayerController extends AbstractController
 
         $player->setName($name);
         $player->setLegacy($legacy);
-
-        // If player is set as lens ensure other players are unset.
-        if ($isLens) {
-            $players = $this->playerRepository->findAllByActiveAndHistory($history);
-            foreach ($players as $p) {
-                $p->setLens(false);
-            }
-        }
-
         $player->setLens($isLens);
         $player->setActive($isActive);
 
@@ -100,6 +133,14 @@ class PlayerController extends AbstractController
                 'HX-Retarget' => '.form-errors',
                 'HX-Reswap' => 'outerHTML',
             ]));
+        }
+
+        // If player is set as lens ensure other players are unset.
+        if ($isLens) {
+            $players = $this->playerRepository->findAllByActiveAndHistory($history);
+            foreach ($players as $p) {
+                $p->setLens(false);
+            }
         }
 
         $this->entityManager->flush();
