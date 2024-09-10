@@ -5,6 +5,9 @@
   * players - A list of Player entities.
 #}
 
+{% if hideForm|default(false) %}
+  <div hx-swap-oob="true" id="player-dialog" class="backdrop hidden"></div>
+{% endif %}
 <ul class="players-list">
 {% for player in players %}
   <li>

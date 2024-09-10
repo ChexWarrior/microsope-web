@@ -45,7 +45,7 @@ class PlayerController extends AbstractController
         $htmxAttrs = [
             'hx-post' => "/player/add",
             'hx-target' => ".players-list",
-            'hx-swap' => 'beforeend',
+            'hx-swap' => 'outerHTML',
         ];
 
         return $this->render('player/add-edit-form.html.twig', [
@@ -102,8 +102,9 @@ class PlayerController extends AbstractController
         $this->entityManager->persist($newPlayer);
         $this->entityManager->flush();
 
-        return $this->render('history/player.html.twig', [
-            'player' => $newPlayer,
+        return $this->render('history/players.html.twig', [
+            'players' => [...$players, $newPlayer],
+            'hideForm' => true,
         ]);
     }
 
