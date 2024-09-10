@@ -2,6 +2,8 @@
   Renders a dialog to edit player information
 
   Variables:
+  * title
+  * history_id
   * player - The player being edited.
 #}
 
@@ -24,6 +26,7 @@
       <label for="active">Active</label>
       <input type="checkbox" name="active" {% if player.active %}checked{% endif %} />
       <br><br>
+      <input type="hidden" name="history" value="{{ history_id|default('') }}" />
       <button value="submit">Submit</button>
       <button hx-get="/player/form/hide" hx-target="#player-dialog" hx-swap="outerHTML"
               value="cancel">Cancel</button>

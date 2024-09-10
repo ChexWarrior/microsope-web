@@ -27,7 +27,7 @@
       {% include "history/players.html.twig" with { players: history.players } %}
       </div>
       <button hx-target="#player-dialog" hx-swap="outerHTML"
-              hx-get="/player/add-form">
+              hx-get="/player/add-form?history={{history.id}}">
         Add Player
       </button>
     </details>

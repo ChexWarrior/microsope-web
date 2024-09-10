@@ -37,8 +37,9 @@ class PlayerController extends AbstractController
     }
 
     #[Route('/player/add-form', name: 'add_form_player', methods: 'GET')]
-    public function addForm(): Response
+    public function addForm(Request $request): Response
     {
+        $history_id = $request->query->get('history');
         $htmxAttrs = [
             'hx-post' => "/player/add",
             'hx-target' => ".players-list",
@@ -47,6 +48,7 @@ class PlayerController extends AbstractController
 
         return $this->render('player/add-edit-form.html.twig', [
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
+            'history_id' => $history_id,
             'player' => [
                 'name' => '',
                 'legacy' => '',
@@ -55,6 +57,12 @@ class PlayerController extends AbstractController
             ],
             'title' => "Add New Player",
         ]);
+    }
+
+    #[Route('/player/add', name: 'add_player', methods: 'POST')]
+    public function add(Request $request): Response
+    {
+
     }
 
     #[Route('/player/{id}/edit', name: 'edit_player', methods: 'POST')]
