@@ -29,9 +29,31 @@ class PlayerController extends AbstractController
             'hx-target' => "body",
         ];
 
-        return $this->render('player/edit-form.html.twig', [
+        return $this->render('player/add-edit-form.html.twig', [
             'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
             'player' => $player,
+            'title' => "Edit Player {$player->getName()}",
+        ]);
+    }
+
+    #[Route('/player/add-form', name: 'add_form_player', methods: 'GET')]
+    public function addForm(): Response
+    {
+        $htmxAttrs = [
+            'hx-post' => "/player/add",
+            'hx-target' => ".players-list",
+            'hx-swap' => 'beforeend',
+        ];
+
+        return $this->render('player/add-edit-form.html.twig', [
+            'htmx_attrs' => HtmlFormatter::formatAsAttributes($htmxAttrs),
+            'player' => [
+                'name' => '',
+                'legacy' => '',
+                'active' => true,
+                'lens' => false,
+            ],
+            'title' => "Add New Player",
         ]);
     }
 
