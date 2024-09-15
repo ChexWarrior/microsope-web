@@ -70,7 +70,7 @@ class PlayerController extends AbstractController
         $history = $this->historyRepository->findOneBy(['id' => $info['history_id']]);
         $newPlayer = new Player(
             $info['name'],
-            $info['history'],
+            $history,
             $info['isActive'],
             $info['legacy'],
             $info['isLens']
@@ -88,6 +88,7 @@ class PlayerController extends AbstractController
         $players = $this->playerRepository->findAllByActiveAndHistory($history);
         if ($newPlayer->isLens()) {
             $this->updateCurrentLens($players);
+            $newPlayer->setLens(true);
         }
 
         $this->entityManager->persist($newPlayer);
@@ -117,6 +118,7 @@ class PlayerController extends AbstractController
         if ($player->isLens()) {
             $players = $this->playerRepository->findAllByActiveAndHistory($player->getHistory());
             $this->updateCurrentLens($players);
+            $player->setLens(true);
         }
 
         $this->entityManager->flush();
