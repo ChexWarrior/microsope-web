@@ -141,7 +141,7 @@ class PlayerController extends AbstractController
         $legacy = $request->getPayload()->get('legacy');
         $isLens = (bool) $request->getPayload()->get('lens', false);
         $isActive = (bool) $request->getPayload()->get('active', false);
-        $history_id = $request->getPayload()->get('history', null);
+        $history_id = $request->getPayload()->get('history_id', null);
         $history = null;
 
         if (!empty($player)) {
