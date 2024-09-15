@@ -164,4 +164,63 @@ class PlayerControllerTest extends IntegrationTestCase
         $this->assertEquals('New Legacy', $player3->getLegacy());
         $this->assertTrue($player3->isActive());
     }
+
+    public function testInvalidPlayerAdd() {
+        $this->dbSetup();
+        [$history] = $this->historyRepository->findAll();
+        $players = $this->playerRepository->findAllByHistory($history);
+
+        // Two players exist with default db setup.
+        $this->assertCount(2, $players);
+        $data = [
+            'name' => '',
+            'legacy' => 'New Legacy',
+            'active' => 'true',
+            'history_id' => $history->getId(),
+        ];
+
+        $expectedErrors = [
+            'name -',
+        ];
+
+        $this->client->request('POST', "/player/add", $data);
+        $this->assertResponseStatusCodeSame(400);
+        foreach ($expectedErrors as $error) {
+            $this->assertAnySelectorTextContains('.form-errors', $error);
+        }
+    }
+
+    public function testPlayerAddNewLens() {
+        $this->dbSetup();
+        [$history] = $this->historyRepository->findAll();
+        $players = $this->playerRepository->findAllByHistory($history);
+
+        // Two players exist with default db setup.
+        $this->assertCount(2, $players);
+        $data = [
+            'name' => 'Player 3',
+            'legacy' => 'New Legacy',
+            'active' => 'true',
+            'history_id' => $history->getId(),
+            'lens' => true,
+        ];
+
+        // Add player 2.
+        $this->client->request('POST', "/player/add", $data);
+        $this->assertResponseIsSuccessful();
+
+        $players = $this->playerRepository->findAllByHistory($history);
+        $this->assertCount(3, $players);
+
+        [$player3] = array_values(array_filter($players, fn($p) => $p->getId() == 3));
+        $otherPlayers = array_values(array_filter($players, fn($p) => $p->getId() != 3));
+        $this->assertEquals('Player 3', $player3->getName());
+        $this->assertEquals('New Legacy', $player3->getLegacy());
+        $this->assertTrue($player3->isActive());
+        $this->assertTrue($player3->isLens());
+        foreach ($otherPlayers as $otherPlayer) {
+            $this->assertFalse($otherPlayer->isLens());
+        }
+
+    }
 }
