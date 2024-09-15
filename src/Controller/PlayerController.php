@@ -82,7 +82,7 @@ class PlayerController extends AbstractController
 
         $errors = array_merge($errors, $this->checkErrors($newPlayer));
         if (count($errors) > 0) {
-           return q$this->errorResponse($errors);
+           return $this->errorResponse($errors);
         }
 
         $players = $this->playerRepository->findAllByActiveAndHistory($history);
@@ -92,7 +92,6 @@ class PlayerController extends AbstractController
 
         $this->entityManager->persist($newPlayer);
         $this->entityManager->flush();
-
         return $this->render('history/players.html.twig', [
             'players' => [...$players, $newPlayer],
             'hideForm' => true,
@@ -102,42 +101,27 @@ class PlayerController extends AbstractController
     #[Route('/player/{id}/edit', name: 'edit_player', methods: 'POST')]
     public function edit(Player $player, Request $request): Response
     {
-        $name = $request->getPayload()->get('name');
-        $legacy = $request->getPayload()->get('legacy');
-        $isLens = (bool) $request->getPayload()->get('lens', false);
-        $isActive = (bool) $request->getPayload()->get('active', false);
-        $history = $player->getHistory();
 
-        $player->setName($name);
-        $player->setLegacy($legacy);
-        $player->setLens($isLens);
-        $player->setActive($isActive);
+        $info = $this->extractRequestInfo($request, $player);
+        $player->setName($info['name']);
+        $player->setLegacy($info['legacy']);
+        $player->setLens($info['isLens']);
+        $player->setActive($info['isActive']);
 
-        $errors = [];
-        foreach ($this->validator->validate($player) as $error) {
-            $errors[] = "{$error->getPropertyPath()} - {$error->getMessage()}";
-        }
-
+        $errors = $this->checkErrors($player);
         if (count($errors) > 0) {
-            return $this->render('common/errors.html.twig', [
-                'errors' => $errors,
-            ], new Response('', Response::HTTP_BAD_REQUEST, [
-                'HX-Retarget' => '.form-errors',
-                'HX-Reswap' => 'outerHTML',
-            ]));
+            return $this->errorResponse($errors);
         }
 
         // If player is set as lens ensure other players are unset.
-        if ($isLens) {
-            $players = $this->playerRepository->findAllByActiveAndHistory($history);
-            foreach ($players as $p) {
-                $p->setLens(false);
-            }
+        if ($player->isLens()) {
+            $players = $this->playerRepository->findAllByActiveAndHistory($player->getHistory());
+            $this->updateCurrentLens($players);
         }
 
         $this->entityManager->flush();
         return $this->redirectToRoute('app_history', [
-                'id' => $history->getId(),
+                'id' => $player->getHistory()->getId(),
             ]
         );
     }
