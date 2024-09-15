@@ -149,7 +149,7 @@ class PlayerControllerTest extends IntegrationTestCase
             'name' => 'Player 3',
             'legacy' => 'New Legacy',
             'active' => 'true',
-            'history_id' => $history->getId(),
+            'history' => $history->getId(),
         ];
 
         // Add player 2.
@@ -176,7 +176,7 @@ class PlayerControllerTest extends IntegrationTestCase
             'name' => '',
             'legacy' => 'New Legacy',
             'active' => 'true',
-            'history_id' => $history->getId(),
+            'history' => $history->getId(),
         ];
 
         $expectedErrors = [
@@ -201,7 +201,7 @@ class PlayerControllerTest extends IntegrationTestCase
             'name' => 'Player 3',
             'legacy' => 'New Legacy',
             'active' => 'true',
-            'history_id' => $history->getId(),
+            'history' => $history->getId(),
             'lens' => true,
         ];
 
