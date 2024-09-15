@@ -2,12 +2,14 @@
   Renders a dialog to edit player information
 
   Variables:
+  * title
+  * history_id
   * player - The player being edited.
 #}
 
 <div id="player-dialog" class="backdrop">
   <div class="edit-player dialog">
-    <strong>Edit Player {{player.name}}</strong>
+    <strong>{{ title }}</strong>
     <div class="form-errors hidden"></div>
     <form method="post" {{ htmx_attrs ? htmx_attrs|raw : ''}}>
       <label for="name">Name</label>
@@ -24,6 +26,7 @@
       <label for="active">Active</label>
       <input type="checkbox" name="active" {% if player.active %}checked{% endif %} />
       <br><br>
+      <input type="hidden" name="history" value="{{ history_id|default('') }}" />
       <button value="submit">Submit</button>
       <button hx-get="/player/form/hide" hx-target="#player-dialog" hx-swap="outerHTML"
               value="cancel">Cancel</button>
