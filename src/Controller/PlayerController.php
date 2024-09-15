@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\History;
 use App\Entity\Player;
 use App\Repository\HistoryRepository;
 use App\Repository\PlayerRepository;
@@ -64,39 +65,29 @@ class PlayerController extends AbstractController
     #[Route('/player/add', name: 'add_player', methods: 'POST')]
     public function add(Request $request): Response
     {
-        $name = $request->getPayload()->get('name');
-        $legacy = $request->getPayload()->get('legacy');
-        $isLens = (bool) $request->getPayload()->get('lens', false);
-        $isActive = (bool) $request->getPayload()->get('active', false);
-        $history_id = $request->getPayload()->get('history');
-
-        // FIXME: Return an error like below.
-        $history = $this->historyRepository->findOneBy(['id' => $history_id]);
-        if (empty($history)) {
-            throw new \InvalidArgumentException("Unable to find valid history!");
-        }
-
-        $newPlayer = new Player($name, $history, $isActive, $legacy, $isLens);
         $errors = [];
-        foreach ($this->validator->validate($newPlayer) as $error) {
-            $errors[] = "{$error->getPropertyPath()} - {$error->getMessage()}";
+        $info = $this->extractRequestInfo($request, null);
+        $history = $this->historyRepository->findOneBy(['id' => $info['history_id']]);
+        $newPlayer = new Player(
+            $info['name'],
+            $info['history'],
+            $info['isActive'],
+            $info['legacy'],
+            $info['isLens']
+        );
+
+        if (empty($history)) {
+            $errors[] = "history - No valid history found.";
         }
 
+        $errors = array_merge($errors, $this->checkErrors($newPlayer));
         if (count($errors) > 0) {
-            return $this->render('common/errors.html.twig', [
-                'errors' => $errors,
-            ], new Response('', Response::HTTP_BAD_REQUEST, [
-                'HX-Retarget' => '.form-errors',
-                'HX-Reswap' => 'outerHTML',
-            ]));
+           return q$this->errorResponse($errors);
         }
 
-        // If player is set as lens ensure other players are unset.
-        if ($isLens) {
-            $players = $this->playerRepository->findAllByActiveAndHistory($history);
-            foreach ($players as $p) {
-                $p->setLens(false);
-            }
+        $players = $this->playerRepository->findAllByActiveAndHistory($history);
+        if ($newPlayer->isLens()) {
+            $this->updateCurrentLens($players);
         }
 
         $this->entityManager->persist($newPlayer);
@@ -157,5 +148,53 @@ class PlayerController extends AbstractController
         return new Response(
             '<div id="player-dialog" class="backdrop hidden"></div>'
         );
+    }
+
+    public function extractRequestInfo(Request $request, ?Player $player): array {
+        $name = $request->getPayload()->get('name');
+        $legacy = $request->getPayload()->get('legacy');
+        $isLens = (bool) $request->getPayload()->get('lens', false);
+        $isActive = (bool) $request->getPayload()->get('active', false);
+        $history_id = $request->getPayload()->get('history', null);
+        $history = null;
+
+        if (!empty($player)) {
+            $history = $player->getHistory();
+        }
+
+        return [
+            'name' => $name,
+            'legacy' => $legacy,
+            'isLens' => $isLens,
+            'isActive' => $isActive,
+            'history_id' => $history_id,
+            'history' => $history,
+        ];
+    }
+
+    public function checkErrors(Player $player): array {
+        $errors = [];
+        foreach ($this->validator->validate($player) as $error) {
+            $errors[] = "{$error->getPropertyPath()} - {$error->getMessage()}";
+        }
+
+        return $errors;
+    }
+
+    public function errorResponse($errors): Response {
+        return $this->render('common/errors.html.twig', [
+            'errors' => $errors,
+        ], new Response('', Response::HTTP_BAD_REQUEST, [
+            'HX-Retarget' => '.form-errors',
+            'HX-Reswap' => 'outerHTML',
+        ]));
+    }
+
+    public function updateCurrentLens(array $players): array {
+        foreach ($players as $p) {
+            $p->setLens(false);
+        }
+
+        return $players;
     }
 }
