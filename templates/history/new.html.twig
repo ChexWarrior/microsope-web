@@ -12,5 +12,24 @@
 
 {% block body %}
   <!-- Top Container -->
-  <div>Hello World</div>
+  <h1>Enter New History Information</h1>
+  <form method="post" action="/history/add">
+  <label for="description">Seed</label>
+    <br>
+    <textarea name="description" rows="5"></textarea>
+    <br><br>
+    <label for="focus">Focus</label>
+    <br>
+    <textarea name="focus" rows="5"></textarea>
+    <br><br>
+    <label> Palette: Excluded
+    <br>
+    <textarea name="excluded" rows="10"></textarea>
+    <br><br>
+    <label> Palette: Included
+    <br>
+    <textarea name="included" rows="10"></textarea>
+    <br><br>
+    <button>Submit</button>
+  </form>
 {% endblock %}
