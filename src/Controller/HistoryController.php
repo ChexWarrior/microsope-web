@@ -22,6 +22,11 @@ class HistoryController extends AbstractController
         private ValidatorInterface $validator
     ){}
 
+    #[Route('/history/new', name: 'create_history', methods: 'GET')]
+    public function new(): Response {
+        return $this->render('history/new.html.twig');
+    }
+
     #[Route('/history/{id}', name: 'app_history', methods: 'GET')]
     public function view(History $history): Response
     {
