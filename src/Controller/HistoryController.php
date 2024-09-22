@@ -77,32 +77,40 @@ class HistoryController extends AbstractController
         ]);
     }
 
-    #[Route('/history/{id}/edit', name: 'edit_history', methods: 'POST')]
-    public function editHistory(History $history, Request $request): Response {
-        $description = $request->getPayload()->get('description');
-        $focus = $request->getPayload()->get('focus');
-        $includedPalette = trim($request->getPayload()->get('included', ''));
-        $excludedPalette = trim($request->getPayload()->get('excluded', ''));
+    #[Route('/history/add', name: 'add_history', methods: 'POST')]
+    public function addHistory(Request $request): Response {
+        $data = $this->parseHistoryParameters($request);
+        $history = History::build(
+            $data['description'],
+            $data['excluded'],
+            $data['included'],
+            $data['focus']
+        );
 
-        $includedPalette = array_filter(explode("\n", $includedPalette));
-        $excludedPalette = array_filter(explode("\n", $excludedPalette));
-
-        $history->setDescription($description);
-        $history->setFocus($focus);
-        $history->setIncluded($includedPalette);
-        $history->setExcluded($excludedPalette);
-        $errors = [];
-        foreach ($this->validator->validate($history) as $error) {
-            $errors[] = "{$error->getPropertyPath()} - {$error->getMessage()}";
+        $errors = $this->checkErrors($history);
+        if (count($errors) > 0) {
+            return $this->returnErrorResponse($errors);
         }
 
+        $this->entityManager->persist($history);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('app_history', [
+            'id' => $history->getId(),
+        ]);
+    }
+
+    #[Route('/history/{id}/edit', name: 'edit_history', methods: 'POST')]
+    public function editHistory(History $history, Request $request): Response {
+        $data = $this->parseHistoryParameters($request);
+        $history->setDescription($data['description']);
+        $history->setFocus($data['focus']);
+        $history->setIncluded($data['included']);
+        $history->setExcluded($data['excluded']);
+
+        $errors = $this->checkErrors($history);
         if (count($errors) > 0) {
-            return $this->render('common/errors.html.twig', [
-                'errors' => $errors,
-            ], new Response('', Response::HTTP_BAD_REQUEST, [
-                'HX-Retarget' => '.form-errors',
-                'HX-Reswap' => 'outerHTML',
-            ]));
+            return $this->returnErrorResponse($errors);
         }
 
         $this->entityManager->flush();
@@ -111,5 +119,37 @@ class HistoryController extends AbstractController
             'hideForm' => true,
             'history' => $history,
         ]);
+    }
+
+    public function checkErrors(History $history): array {
+        $errors = [];
+        foreach ($this->validator->validate($history) as $error) {
+            $errors[] = "{$error->getPropertyPath()} - {$error->getMessage()}";
+        }
+
+        return $errors;
+    }
+
+    public function returnErrorResponse(array $errors): Response {
+        return $this->render('common/errors.html.twig', [
+            'errors' => $errors,
+        ], new Response('', Response::HTTP_BAD_REQUEST, [
+            'HX-Retarget' => '.form-errors',
+            'HX-Reswap' => 'outerHTML',
+        ]));
+    }
+
+    public function parseHistoryParameters(Request $request): array {
+        $data = [];
+        $data['description'] = $request->getPayload()->get('description');
+        $data['focus'] = $request->getPayload()->get('focus');
+
+        $includedPalette = trim($request->getPayload()->get('included', ''));
+        $excludedPalette = trim($request->getPayload()->get('excluded', ''));
+
+        $data['included'] = array_filter(explode("\n", $includedPalette));
+        $data['excluded'] = array_filter(explode("\n", $excludedPalette));
+
+        return $data;
     }
 }
